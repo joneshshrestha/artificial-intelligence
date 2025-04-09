@@ -1,0 +1,38 @@
+{
+	"_annotation": "2+((5-4)*3)",
+	"operator_tree": {
+		"type": "operator",
+		"value": "+",
+		"operands": [
+			{
+				"type": "number",
+				"value": 2
+			},
+			{
+				"type": "operator",
+				"value": "*",
+				"operands": [
+					{
+						"type": "operator",
+						"value": "-",
+						"operands": [
+							{
+								"type": "number",
+								"value": 5
+							},
+							{
+								"type": "number",
+								"value": 4
+							}	
+						]
+					},		
+					{
+						"type": "number",
+						"value": 3
+					}
+				]
+			}
+		]
+	}
+}
+
