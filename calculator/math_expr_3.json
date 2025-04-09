@@ -1,0 +1,28 @@
+{
+	"_annotation": "(6*8)*10",
+	"operator_tree": {
+		"type": "operator",
+		"value": "*",
+		"operands": [
+			{
+				"type": "operator",
+				"value": "*",
+				"operands": [
+					{					
+						"type": "number",
+						"value": 6				
+					},		
+					{
+						"type": "number",
+						"value": 8
+					}
+				]
+			},
+			{
+				"type": "number",
+				"value": 10					
+			}
+		]
+	}
+}
+
