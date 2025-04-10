@@ -3,8 +3,8 @@
 #  Created by: Kenny Davila Castellanos
 #      For: CSC 480 - AI 1
 #
-#  TODO: Modified by: ???
-#  TODO: Modified When: ???
+#  TODO: Modified by: Jonesh Shrestha
+#  TODO: Modified When: 10/04/2024
 # =========================================
 
 
@@ -52,6 +52,9 @@ def main():
     #     * position 1 ... n are your custom command line arguments
 
     # TODO: Load the input File using the JSON library
+    with open(sys.argv[1], 'r') as file_name:
+        json_data = json.load(file_name)
+    print(json_data)
 
     # Step 2
     # TODO: Load the expression from file using the OperatorTree.BuildFromJSON function
@@ -59,7 +62,7 @@ def main():
     #       - OperatorTree.BuildFromJSON
     #       - Operand.BuildFromJSON
     #       - Operator.BuildFromJSON
-
+    def 
     # Step 3
     # TODO: Evaluate the expression (using the evaluate function of the OperatorTree class)
 
