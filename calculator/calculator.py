@@ -54,15 +54,18 @@ def main():
     # TODO: Load the input File using the JSON library
     with open(sys.argv[1], 'r') as file_name:
         json_data = json.load(file_name)
-    print(json_data)
-
+    # print()
+    for child_json in json_data['operator_tree'].get('operands'):
+        if child_json.get('type') == 'operator':
+            print(child_json.get('value'))
+        elif child_json.get('type') == 'number':
+            print(child_json.get('value'))
     # Step 2
     # TODO: Load the expression from file using the OperatorTree.BuildFromJSON function
     # TODO: You must implement the functions
     #       - OperatorTree.BuildFromJSON
     #       - Operand.BuildFromJSON
     #       - Operator.BuildFromJSON
-    def 
     # Step 3
     # TODO: Evaluate the expression (using the evaluate function of the OperatorTree class)
 

@@ -3,8 +3,8 @@
 #  Created by: Kenny Davila Castellanos
 #      For: CSC 480 - AI 1
 #
-#  TODO: Modified by: ???
-#  TODO: Modified When: ???
+#  TODO: Modified by: Jonesh Shrestha
+#  TODO: Modified When: 10/04/2024
 # =========================================
 
 
@@ -40,6 +40,20 @@ class Operator(OperatorTreeElement):
         #
         #  This function assumes that json_data contains the info for an Operator Node
         #     and all of its children, and children of its children, etc.
+        
+        value = json_data.get('value')
+        children = []
 
-        raise NotImplementedError()
+        for child_json in json_data.get('operands'):
+            if child_json.get('type') == 'operator':
+                child = Operator.BuildFromJSON(child_json)
+            elif child_json.get('type') == 'number':
+                child = Operand.BuildFromJSON(child_json)
+            else:
+                raise ValueError("Node type not recognized.")
+            
+            children.append(child)
+
+        return Operator(value, children)
+    
 
