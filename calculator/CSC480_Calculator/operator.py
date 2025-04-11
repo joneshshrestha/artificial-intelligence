@@ -24,7 +24,24 @@ class Operator(OperatorTreeElement):
         #       - self._value == "*" ?
         #       - self._value == "-" ?
         #       - self._value == "/" ?
-        raise NotImplementedError()
+
+        # if the children item is an operand, calls the operand evaluate method
+        # else recursively call the evaluate method of this class 
+        left_value = self.__children[0].evaluate()
+        right_value = self.__children[1].evaluate()
+        if self._value == '+':
+            return left_value + right_value
+        elif self._value == '-':
+            return left_value - right_value
+        elif self._value == '*':
+            return left_value * right_value
+        elif self.__children == '/':
+            if right_value != 0:
+                return left_value / right_value
+            else:
+                raise ZeroDivisionError("Cannot divide with 0.")
+        else:
+            raise ValueError(f'Unknown operator: {self._value}')
 
     def post_order_list(self, out_list):
         # Overrides the post_order_list function from parent class.
@@ -40,7 +57,7 @@ class Operator(OperatorTreeElement):
         #
         #  This function assumes that json_data contains the info for an Operator Node
         #     and all of its children, and children of its children, etc.
-        
+
         value = json_data.get('value')
         children = []
 
