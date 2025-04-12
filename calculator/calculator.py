@@ -3,8 +3,8 @@
 #  Created by: Kenny Davila Castellanos
 #      For: CSC 480 - AI 1
 #
-#  TODO: Modified by: Jonesh Shrestha
-#  TODO: Modified When: 10/04/2024
+#  Modified by: Jonesh Shrestha
+#  Modified When: 08/04/2024
 # =========================================
 
 
@@ -34,8 +34,28 @@ def stack_based_evaluation(post_order):
     # HINT: use isinstance function to check the types of the elements on
     #       the post_order list
 
-    # TODO: your logic here
-    return 0.0
+    # get_value() to access value outside of the package
+    stack = []
+    for item in post_order:
+        if isinstance(item, Operand):
+            stack.append(item.get_value())
+        elif isinstance(item, Operator):
+            right_operand_B = stack.pop()
+            left_operand_A = stack.pop()
+            if item.get_value() == '+':
+                stack.append(left_operand_A + right_operand_B)
+            elif item.get_value() == '-':
+                stack.append(left_operand_A - right_operand_B)
+            elif item.get_value() == '*':
+                stack.append(left_operand_A * right_operand_B)
+            elif item.get_value() == '/':
+                if right_operand_B != 0:
+                    stack.append(left_operand_A / right_operand_B)
+                else:
+                     raise ZeroDivisionError("Cannot divide with 0.")
+            else:
+                raise ValueError(f'Unknown operator: {item.get_value()}')
+    return stack[0]
 
 
 def main():
@@ -46,35 +66,41 @@ def main():
         return
 
     # Step 1
-    # TODO: Load the JSON data
+    # Load the JSON data
     #     The actual filename to load should be on sys.argv ...
     #     * position 0 is always the path to the script
     #     * position 1 ... n are your custom command line arguments
 
-    # TODO: Load the input File using the JSON library
-    with open(sys.argv[1], 'r') as file_name:
-        json_data = json.load(file_name)
-    # print()
-    for child_json in json_data['operator_tree'].get('operands'):
-        if child_json.get('type') == 'operator':
-            print(child_json.get('value'))
-        elif child_json.get('type') == 'number':
-            print(child_json.get('value'))
+    # Load the input File using the JSON library
+    try:
+        with open(sys.argv[1], 'r') as file_name:
+            json_data = json.load(file_name)
+    except FileNotFoundError:
+        print(f'Cannot find file named {sys.argv[1]}')
+        return
+
     # Step 2
-    # TODO: Load the expression from file using the OperatorTree.BuildFromJSON function
+    # Load the expression from file using the OperatorTree.BuildFromJSON function
+    expression = OperatorTree.BuildFromJSON(json_data)
     # TODO: You must implement the functions
     #       - OperatorTree.BuildFromJSON
     #       - Operand.BuildFromJSON
     #       - Operator.BuildFromJSON
     # Step 3
     # TODO: Evaluate the expression (using the evaluate function of the OperatorTree class)
+    evaluate_tree_expression = expression.evaluate()
+    print(f'Operator Tree Evaluation Result: {evaluate_tree_expression}')
 
     # Step 4
     # TODO: Generate a list of the elements on the Operator Tree in post-order and print it!
+    post_order_result_list = expression.post_order_list()
+    print(f'Post Order: {post_order_result_list}')
 
     # Step 5
     # TODO: Evaluate the expression (again) but using the post fix notation and a stack
     #       This must be done by calling stack_based_evaluation
+    evaluate_post_order_stack = stack_based_evaluation(post_order_result_list)
+    print(f'Post Order Stack Evaluation Result: {evaluate_post_order_stack}')
 
 
 
