@@ -32,7 +32,7 @@ class Operator(OperatorTreeElement):
             return left_value - right_value
         elif self._value == '*':
             return left_value * right_value
-        elif self.__children == '/':
+        elif self._value == '/':
             if right_value != 0:
                 return left_value / right_value
             else:
@@ -44,7 +44,7 @@ class Operator(OperatorTreeElement):
         # Overrides the post_order_list function from parent class.
         # Add itself and its children ... all in post-order
 
-        # If the children item is an operand, calls the operand post_order_list method which calls repr and appends the value 
+        # If the children item is an operand, calls the operand post_order_list method which uses repr and appends the value 
         # Else recursively call the post_order_list method of this class 
         for child in self.__children:
             child.post_order_list(out_list)

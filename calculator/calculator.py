@@ -10,9 +10,7 @@
 
 import sys
 import json
-
 from CSC480_Calculator import OperatorTree, Operator, Operand
-
 
 def stack_based_evaluation(post_order):
     # This is a simple evaluation algorithm, using a stack
@@ -51,11 +49,13 @@ def stack_based_evaluation(post_order):
                 if right_operand_B != 0:
                     stack.append(left_operand_A / right_operand_B)
                 else:
-                     raise ZeroDivisionError("Cannot divide with 0.")
+                     raise ZeroDivisionError('Cannot divide with 0.')
             else:
                 raise ValueError(f'Unknown operator: {item.get_value()}')
-    return stack.pop()
-
+    if len(stack) != 1:
+        raise ValueError('There is more than one item in the stack.')
+    else:
+        return stack[0]
 
 def main():
     # handling the command line arguments , given do not change!
@@ -81,27 +81,23 @@ def main():
     # Step 2
     # Load the expression from file using the OperatorTree.BuildFromJSON function
     expression = OperatorTree.BuildFromJSON(json_data)
-    # TODO: You must implement the functions
-    #       - OperatorTree.BuildFromJSON
-    #       - Operand.BuildFromJSON
-    #       - Operator.BuildFromJSON
+
     # Step 3
-    # TODO: Evaluate the expression (using the evaluate function of the OperatorTree class)
+    # Evaluate the expression (using the evaluate function of the OperatorTree class)
+    expression_annotation = json_data.get('_annotation')
+    print(f'Calculating expression: {expression_annotation}')
     evaluate_tree_expression = expression.evaluate()
     print(f'Operator Tree Evaluation Result: {evaluate_tree_expression}')
 
     # Step 4
-    # TODO: Generate a list of the elements on the Operator Tree in post-order and print it!
+    # Generate a list of the elements on the Operator Tree in post-order and print it!
     post_order_result_list = expression.post_order_list()
     print(f'Post Order: {post_order_result_list}')
 
     # Step 5
-    # TODO: Evaluate the expression (again) but using the post fix notation and a stack
-    #       This must be done by calling stack_based_evaluation
+    # Evaluate the expression (again) but using the post fix notation and a stack by calling stack_based_evaluation
     evaluate_post_order_stack = stack_based_evaluation(post_order_result_list)
     print(f'Post Order Stack Evaluation Result: {evaluate_post_order_stack}')
-
-
 
 if __name__ == "__main__":
     main()
