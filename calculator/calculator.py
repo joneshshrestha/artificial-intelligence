@@ -15,8 +15,8 @@ from CSC480_Calculator import OperatorTree, Operator, Operand
 
 
 def stack_based_evaluation(post_order):
-    # TODO: this is a simple evaluation algorithm, using a stack
-    #       it sequentially reads the mathematical expression in post-fix notation
+    # This is a simple evaluation algorithm, using a stack
+    # it sequentially reads the mathematical expression in post-fix notation
     #        - every time it finds an operand (A)
     #             it will simply put (A) on the stack
     #        - every time it finds an operator (OP)
@@ -31,9 +31,8 @@ def stack_based_evaluation(post_order):
     #    If the expression is valid, only one item will be there at the end
     #    this is the solution, and must be returned
     #
-    # HINT: use isinstance function to check the types of the elements on
-    #       the post_order list
-
+    
+    # isinstance function is used to check the types of the elements on the post_order list
     # get_value() to access value outside of the package
     stack = []
     for item in post_order:
@@ -55,7 +54,7 @@ def stack_based_evaluation(post_order):
                      raise ZeroDivisionError("Cannot divide with 0.")
             else:
                 raise ValueError(f'Unknown operator: {item.get_value()}')
-    return stack[0]
+    return stack.pop()
 
 
 def main():
