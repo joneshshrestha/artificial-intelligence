@@ -1,0 +1,80 @@
+{
+	"cases": [
+		{
+			"name": "Easy_1",
+			"start": "A1",
+			"deliveries": [
+				"C2"
+			]
+		},
+		{
+			"name": "Easy_2",
+			"start": "M1",
+			"deliveries": [
+				"D1", "R3"
+			]
+		},
+		{
+			"name": "Easy_3",
+			"start": "D1",
+			"deliveries": [
+				"C2", "A2", "D3"
+			]
+		},
+		{
+			"name": "Medium_1",
+			"start": "Q1",
+			"deliveries": [
+				"D1", "R2", "V4", "F3"
+			]
+		},
+		{
+			"name": "Medium_2",
+			"start": "R2",
+			"deliveries": [
+				"A2", "C2", "N3", "K3", "F1"
+			]
+		},
+		{
+			"name": "Medium_3",
+			"start": "L3",
+			"deliveries": [
+				"I1", "S2", "T4", "X4", "E4", 
+				"U1"
+			]
+		},
+		{
+			"name": "hard_1",
+			"start": "Q2",
+			"deliveries": [
+				"A2", "S3", "G2", "W2", "E2", 
+				"J3", "H2"
+			]
+		},
+		{
+			"name": "hard_2",
+			"start": "P2",
+			"deliveries": [
+				"N3", "C4", "D4", "A2", "X2", 
+				"B2", "J2", "F2"
+			]
+		},
+		{
+			"name": "hard_3",
+			"start": "O1",
+			"deliveries": [
+				"A2", "B2", "C2", "D2", "E2", 
+				"F2", "G2", "H2", "I2"
+			]
+		},
+		{
+			"name": "hard_4",
+			"start": "V3",
+			"deliveries": [
+				"B4", "D1", "F4", "G1", "H2", 
+				"I3", "J4", "K1", "X1", "W1", 
+				"R1", "P3"
+			]
+		}
+	]
+}
