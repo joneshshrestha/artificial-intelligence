@@ -154,5 +154,46 @@ class Problem:
     
     """
     def estimate_cost_to_solution(self, state: State) -> float:
-        # TODO: YOUR CODE HERE
-        return 0.0
+        # get current location from state
+        current_location = state.get_location()
+        # get start/final location from search_request
+        start_final_location = self.__current_case.get_start_location()
+        # get targets from search_requests
+        targets = self.__current_case.get_targets()
+        # get visited targets from state
+        visited_targets = state.get_visited_targets()
+
+        # pending delivery targets list
+        pending_targets = []
+        
+        # if there is any target which is not visited append to pending delivery targets list
+        for i in range(len(targets)):
+            if visited_targets[i] == False:
+                pending_targets.append(targets[i])
+
+        # observation 1: no deliveries left
+        if len(pending_targets) == 0:
+            return self.__city_map.__compute_straight_line_distance(current_location, start_final_location) 
+        # observation 2: 1 or more deliveries left
+        else:
+            min_dist = float('inf')
+            max_dist = 0
+            
+            for target in pending_targets:
+                sl_dist = self.__city_map.get_straight_line_distance(target, start_final_location)
+
+                if sl_dist < min_dist:
+                    min_dist = sl_dist
+                    l_close = target
+                if sl_dist > max_dist:
+                    max_dist = sl_dist
+                    l_far = target
+                
+            l_close_distance = self.__city_map.get_straight_line_distance(current_location, l_close)
+            l_far_distance = self.__city_map.get_straight_line_distance(current_location, l_far)
+
+            c_beginning = min(l_close_distance, l_far_distance)
+            c_middle = self.__city_map.get_straight_line_distance(l_close, l_far)
+            c_final = self.__city_map.get_straight_line_distance(l_close, start_final_location)
+            
+            return c_beginning + c_middle + c_final
