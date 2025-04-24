@@ -4,7 +4,7 @@
 #  Created by: Kenny Davila Castellanos
 #              for CSC 380/480
 #
-#  MODIFIED BY: [Your NAME]
+#  MODIFIED BY: Jonesh Shrestha
 # ===============================================
 """
 from .state import State
@@ -47,8 +47,14 @@ class Problem:
               and the search nodes. 
     """
     def get_initial_state(self) -> State | None:
-        # TODO: YOUR CODE HERE
-        return None
+        # get the start location
+        start_location = self.__current_case.get_start_location()
+        # get the target locations
+        targets = self.__current_case.get_targets()
+        # stores list with default boolean value false, for each target
+        visited_targets = len(targets) * [False]
+        # return the initial state    
+        return State(start_location, visited_targets)
 
     """
         Check if the given state object represent a goal state. This can be
@@ -60,8 +66,14 @@ class Problem:
             have been visited.
     """
     def is_goal_state(self, state: State) -> bool:
-        # TODO: YOUR CODE HERE
-        return False
+        # get the start location
+        start_location = self.__current_case.get_start_location()
+        # get the current location from state
+        current_location = state.get_location()
+        # get all the boolean values in visited list from state
+        visited_targets = state.get_visited_targets()
+        # return true if current location is the start location and all targets are visited
+        return current_location == start_location and all(visited_targets)
 
     """
         Given a state, this function generates a List of the Children states.
@@ -80,8 +92,33 @@ class Problem:
             object and visited targets in the State object.  
     """
     def generate_children(self, state: State) -> List[State]:
-        # TODO: YOUR CODE HERE
-        return []
+        # get current location from state
+        current_location = state.get_location()
+        # get neighbors from map
+        neighbors = self.__city_map.get_neighbors(current_location)
+        # get visited targets from state (Boolean List)
+        visited_targets = state.get_visited_targets()
+        # get targets from search_request (List)
+        targets = self.__current_case.get_targets()
+
+        # new list of child state to return 
+        child_state = []
+
+        # for each neighbor create new state
+        for neighbor in neighbors:
+            # create new visited targets copy 
+            child_visited_targets = visited_targets.copy()
+            # if any neighbor in targets, for that neighbor(index) mark it as visited
+            if neighbor in targets:
+                target_index = targets.index(neighbor)
+                child_visited_targets[target_index] = True
+        
+        # create new state with current location and visited targets
+        new_child_state = State(neighbor, child_visited_targets)
+        # append to the child_state list
+        child_state.append(new_child_state)
+
+        return child_state
 
     """
         Cost-Model: cost of executing the given action on the given state
@@ -95,8 +132,13 @@ class Problem:
              locations    
     """
     def get_action_cost(self, state: State, action: str) -> float:
-        # TODO: YOUR CODE HERE
-        return 0.0
+        # get current location from state
+        current_location = state.get_location()
+        # destination is action
+        destination = action
+        # calculate get_cost from map
+        get_cost = self.__city_map.get_cost(current_location, destination)
+        return get_cost
 
     """
         Cost-Estimation-Model: estimated cost of reaching a goal state from the
