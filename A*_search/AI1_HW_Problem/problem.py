@@ -102,7 +102,7 @@ class Problem:
         targets = self.__current_case.get_targets()
 
         # new list of child state to return 
-        child_state = []
+        child_states = []
 
         # for each neighbor create new state
         for neighbor in neighbors:
@@ -113,12 +113,12 @@ class Problem:
                 target_index = targets.index(neighbor)
                 child_visited_targets[target_index] = True
         
-        # create new state with current location and visited targets
-        new_child_state = State(neighbor, child_visited_targets)
-        # append to the child_state list
-        child_state.append(new_child_state)
+            # create new state with current location and visited targets
+            new_child_state = State(neighbor, child_visited_targets)
+            # append to the child_state list
+            child_states.append(new_child_state)
 
-        return child_state
+        return child_states
 
     """
         Cost-Model: cost of executing the given action on the given state
