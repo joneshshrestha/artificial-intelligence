@@ -4,7 +4,7 @@
 #  Created by: Kenny Davila Castellanos
 #              for CSC 380/480
 #
-#  MODIFIED BY: [Your NAME]
+#  MODIFIED BY: Jonesh Shrestha
 # ===============================================
 """
 
@@ -30,8 +30,48 @@ class SearchAlgorithms:
     """
     @staticmethod
     def breadth_first_search(problem: Problem) -> SearchResults:
-        # TODO: Your CODE HERE
-        return SearchResults(None, None, 0, 0)
+        initial_state = problem.get_initial_state()
+        root_node = SearchTreeNode(None, None, initial_state, 0)
+
+        if problem.is_goal_state(initial_state):
+            return SearchResults([], 0.0, 1, 0)
+        
+        # create a FIFO queue for frontier and assign root_node initially
+        frontier = [root_node]
+
+        reached = {initial_state.get_representation()}
+        explored = 0
+
+        # while frontier is not empty loop
+        while frontier:
+            # FIFO implementation: get first node
+            current_node = frontier.pop(0)
+            current_state = current_node.get_state()
+
+            explored += 1
+
+            child_states = problem.generate_children(current_state)
+
+            for child_state in child_states:
+                action = child_state.get_location()
+
+                state_representation = child_state.get_representation()
+
+                action_cost = problem.get_action_cost(current_state, action)
+                path_cost = current_node.get_path_cost() + action_cost
+
+                child_node = SearchTreeNode(current_node, action, child_state, path_cost)
+
+                if problem.is_goal_state(child_state):
+                    solution = child_node.path_to_root()
+                    return SearchResults(solution, path_cost, len(reached), explored)
+                
+                if state_representation not in reached:
+                    reached.add(state_representation)
+
+                    frontier.append(child_node)
+
+        return SearchResults(None, None, len(reached), explored)
 
     """
         Implementation of the Uniform Cost Search (UCS) algorithm. The only input
