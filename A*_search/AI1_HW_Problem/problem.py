@@ -173,7 +173,7 @@ class Problem:
 
         # observation 1: no deliveries left
         if len(pending_targets) == 0:
-            return self.__city_map.__compute_straight_line_distance(current_location, start_final_location) 
+            return self.__city_map.get_straight_line_distance(current_location, start_final_location) 
         # observation 2: 1 or more deliveries left
         else:
             min_dist = float('inf')
