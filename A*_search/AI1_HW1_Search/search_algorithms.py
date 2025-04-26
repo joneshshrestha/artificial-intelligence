@@ -30,26 +30,30 @@ class SearchAlgorithms:
     """
     @staticmethod
     def breadth_first_search(problem: Problem) -> SearchResults:
+        # create root node using the initial state
         initial_state = problem.get_initial_state()
         root_node = SearchTreeNode(None, None, initial_state, 0)
 
+        # if initial state is goal state return
         if problem.is_goal_state(initial_state):
             return SearchResults([], 0.0, 1, 0)
         
         # create a FIFO queue for frontier and assign root_node initially
         frontier = [root_node]
 
+        # track visited states with reached
         reached = {initial_state.get_representation()}
         explored = 0
 
         # while frontier is not empty loop
         while frontier:
-            # FIFO implementation: get first node
+            # FIFO implementation: get first node from queue
             current_node = frontier.pop(0)
             current_state = current_node.get_state()
 
             explored += 1
 
+            # generate all possible child states
             child_states = problem.generate_children(current_state)
 
             for child_state in child_states:
@@ -57,20 +61,25 @@ class SearchAlgorithms:
 
                 state_representation = child_state.get_representation()
 
+                # calculate new path cost
                 action_cost = problem.get_action_cost(current_state, action)
                 path_cost = current_node.get_path_cost() + action_cost
 
+                # create a search tree node
                 child_node = SearchTreeNode(current_node, action, child_state, path_cost)
 
+                # check if we have the goal state
                 if problem.is_goal_state(child_state):
                     solution = child_node.path_to_root()
                     return SearchResults(solution, path_cost, len(reached), explored)
                 
+                # add unvisited states to frontier queue
                 if state_representation not in reached:
                     reached.add(state_representation)
 
                     frontier.append(child_node)
 
+        # no solution
         return SearchResults(None, None, len(reached), explored)
 
     """
@@ -81,8 +90,51 @@ class SearchAlgorithms:
     """
     @staticmethod
     def uniform_cost_search(problem: Problem) -> SearchResults:
-        # TODO: Your CODE HERE
-        return SearchResults(None, None, 0, 0)
+         # create root node using the initial state
+        initial_state = problem.get_initial_state()
+        root_node = SearchTreeNode(None, None, initial_state, 0)
+        
+        # create a priority queue for frontier ordered by path cost
+        frontier = [(0.0, root_node)]
+        heapq.heapify(frontier)
+
+        # state representation as key and cost as value to track visited states with best path cost
+        reached = {initial_state.get_representation(): root_node}
+        explored = 0
+
+        while frontier:
+            # get the lowest path_cost
+            current_node = heapq.heappop(frontier)[1]
+            current_state = current_node.get_state()
+
+            # check for goal state
+            if problem.is_goal_state(current_state):
+                solution = current_node.path_to_root()
+                return SearchResults(solution, current_node.get_path_cost(), len(reached), explored)
+            
+            explored += 1
+            child_states = problem.generate_children(current_state)
+
+            for child_state in child_states:
+                action = child_state.get_location()
+
+                state_representation = child_state.get_representation()
+
+                # calculate new path cost
+                action_cost = problem.get_action_cost(current_state, action)
+                path_cost = current_node.get_path_cost() + action_cost
+
+                child_node = SearchTreeNode(current_node, action, child_state, path_cost)
+
+                # add new state or update existing one if better path found
+                if state_representation not in reached or path_cost < reached[state_representation].get_path_cost():
+                    reached[state_representation] = child_node
+                    heapq.heappush(frontier, (path_cost, child_node))
+
+        # no solution
+        return SearchResults(None, None, len(reached), explored)
+
+            
 
     """
         Implementation of the A* Search algorithm. The only input
@@ -92,8 +144,53 @@ class SearchAlgorithms:
     """
     @staticmethod
     def A_start_search(problem: Problem) -> SearchResults:
-        # TODO: Your CODE HERE
-        return SearchResults(None, None, 0, 0)
+         # create root node using the initial state
+        initial_state = problem.get_initial_state()
+        root_node = SearchTreeNode(None, None, initial_state, 0)
+
+        # create initial heuristic cost
+        initial_heuristic = problem.estimate_cost_to_solution(initial_state)
+        
+        # create a priority queue for frontier ordered by path cost and heuristic
+        frontier = [(initial_heuristic, root_node)]
+        heapq.heapify(frontier)
+
+        # state representation as key and cost as value to track visited states with best path cost
+        reached = {initial_state.get_representation(): root_node}
+        explored = 0
+
+        while frontier:
+            # get node with lowest f value from frontier
+            current_node = heapq.heappop(frontier)[1]
+            current_state = current_node.get_state()
+
+            # check for goal state
+            if problem.is_goal_state(current_state):
+                solution = current_node.path_to_root()
+                return SearchResults(solution, current_node.get_path_cost(), len(reached), explored)
+            
+            explored += 1
+            child_states = problem.generate_children(current_state)
+            
+            for child_state in child_states:
+                action = child_state.get_location()
+
+                state_representation = child_state.get_representation()
+
+                action_cost = problem.get_action_cost(current_state, action)
+                path_cost = current_node.get_path_cost() + action_cost
+
+                child_node = SearchTreeNode(current_node, action, child_state, path_cost)
+
+                if state_representation not in reached or path_cost < reached[state_representation].get_path_cost():
+                    reached[state_representation] = child_node
+                    heuristic_cost = problem.estimate_cost_to_solution(child_state)
+                    f = path_cost + heuristic_cost
+
+                    heapq.heappush(frontier, (f, child_node))
+
+        return SearchResults(None, None, len(reached), explored)
+        
 
     """
         Auxiliary function for printing search results 
