@@ -201,21 +201,22 @@ def part_two():
         avg_steps_to_goal = (total_goal_steps / goals) if (goals > 0) else 0
         steps_list.append(avg_steps_to_goal)
     
-    # Calculate statistics (following tutorial.py format)
+    # calculate statistics
     mean_goals = np.mean(goals_list)
     std_goals = np.std(goals_list)
     mean_steps = np.mean(steps_list)
     
-    # Display results in tutorial.py format
+    # display results
     print(f"\n*** OPTIMAL POLICY RESULTS ***:")
-    print(f"\tMean Goals: {mean_goals:>8.2f}/{num_episodes} episodes")
-    print(f"\tStd Goals:  {std_goals:>8.2f}")
-    print(f"\tMean Steps: {mean_steps:>8.2f} steps to goal")
+    print(f"\tMean Goals: {mean_goals:>5.2f}/{num_episodes} episodes")
+    print(f"\tStd Goals:  {std_goals:>5.2f}")
+    print(f"\tMean Steps: {mean_steps:>5.2f} steps to goal")
 
-    # 6. Plot histogram
+    # plot histogram
     plt.figure()
     plt.hist(goals_list, bins=10, density=True)
     plt.title(
+        f"Density Histogram of the Number of Episodes (out of 10,000) Reaching the Goal State\n\n"
         f"Optimal Policy (Value Iteration)\n"
         f"[mean: {mean_goals:.2f}, stdev: {std_goals:.2f}, mean#steps: {mean_steps:.1f}]",
         fontsize=8)
@@ -223,10 +224,9 @@ def part_two():
     plt.ylabel('Density', fontsize=8)
     plt.show()
 
-
 def main():
-    part_one()
-    # part_two()
+    # part_one()
+    part_two()
 
 if __name__ == "__main__":
     main() 
