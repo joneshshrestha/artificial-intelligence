@@ -26,8 +26,8 @@ def part_one():
     from tutorial import generate_random_policy, run_one_experiment, display_policy
 
     env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
-    nS = env.observation_space.n # number of states -- 8x8=64
-    nA = env.action_space.n # number of actions -- four directions; 0:left, 1:down, 2:right, 3:up
+    nS = env.observation_space.n # number of states (8x8=64)
+    nA = env.action_space.n # number of actions (four directions; 0:left, 1:down, 2:right, 3:up)
 
     # 10 different seeds for reproducibility of random policy
     seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -37,16 +37,16 @@ def part_one():
     # dictionary to store the statistics of each policy
     policy_stats = []
 
-    # generate 10 different random policies using different seeds (following tutorial.py pattern)
+    # generate 10 different random policies using different seeds
     for seed in seeds:
         print(f"\n*** EVALUATING POLICY WITH SEED {seed} ***")
         # generate a random policy for each seed
         policy = generate_random_policy(nA, nS, seed=seed)
         goals_list = [] # list to store the number of times the goal is reached
         steps_list = [] # list to store the number of steps taken to reach the goal for each experiment
-        
+        # run the experiment for each seed 10000 times
         for experiment in range(num_experiments):
-            if experiment % 20 == 0:  # Progress indicator (every 20 experiments)
+            if experiment % 20 == 0:  # show progress indicator (every 20 experiments)
                 print(f"Running experiment {experiment+1}/{num_experiments} for seed {seed}...")
             goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes)
             goals_list.append(goals) # append the number of times the goal is reached
@@ -71,13 +71,9 @@ def part_one():
     # Sort by mean_goals to find the top two policies
     top_two_policies = sorted(policy_stats, key=lambda x: x['mean_goals'], reverse=True)[:2]
 
-    # print the top two policies (following tutorial.py result format)
+    # print the top two policies
     for idx, policy in enumerate(top_two_policies, 1):
-        print(f"\n*** TOP POLICY {idx} (SEED {policy['seed']}) RESULTS ***:")
-        print(f"\tMean Goals: {policy['mean_goals']:>8.2f}/{num_episodes} episodes")
-        print(f"\tStd Goals:  {policy['std_goals']:>8.2f}")
-        print(f"\tMean Steps: {policy['mean_steps']:>8.2f} steps to goal")
-        print("\n*** POLICY GRID ***")
+        print(f"\n *** Policy ***")
         print(display_policy(policy['policy'], nS))
         plt.figure()
         plt.hist(policy['goals_list'], bins=10, density=True)
@@ -148,43 +144,49 @@ def part_two():
     print("\n*** Converged V(s) Table ***")
     print(display_policy(cur_value_function, nS))
 
-    print("\n Visual Simulation following the optimal policy")
+    print("\n Simulation following the optimal policy")
     # using gymnasium's built-in FrozenLake
     sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="human")
-    sim_env.reset()  # Tutorial pattern: no unpacking
+    # reset the environment
+    sim_env.reset()
     done = False
     steps = 0
 
+    # run the simulation until the goal is reached
     while not done:
-        state = sim_env.get_wrapper_attr("s")  # Tutorial pattern: consistent state access
+        # get current state of the environment
+        state = sim_env.get_wrapper_attr("s")
+        # get action from policy
         action = policy[state]
+        # print the step, action and the state details
         action_names = ['Left', 'Down', 'Right', 'Up']
         print(f"Step {steps}: State={state}, Action={action} ({action_names[action]})")
-        next_state, reward, done, info, p = sim_env.step(action)  # Tutorial pattern: 5 values
+        # use the action in the simulation environment
+        next_state, reward, done, info, p = sim_env.step(action)
         steps += 1
     
-    print(f"Visual simulation finished in {steps} steps with reward {reward}")
-    sim_env.close()  # Close the visual window
+    print(f"Simulation finished in {steps} steps with reward {reward}")
+    sim_env.close()
 
-    # Also show text version for comparison
-    print("\n--- Text version of the simulation ---")
-    sim_env_text = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
-    sim_env_text.reset()  # Tutorial pattern: no unpacking
+    # CLI version of the simulation
+    print("\n*** CLI version of the simulation ***")
+    cli_sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
+    cli_sim_env.reset()
     done = False
     steps = 0
     print("Initial state:")
-    print(sim_env_text.render())
+    print(cli_sim_env.render())
     
     while not done:
-        state = sim_env_text.get_wrapper_attr("s")  # Tutorial pattern: consistent state access
+        state = cli_sim_env.get_wrapper_attr("s")
         action = policy[state]
-        next_state, reward, done, info, p = sim_env_text.step(action)  # Tutorial pattern: 5 values
+        next_state, reward, done, info, p = cli_sim_env.step(action)
         print(f"After step {steps}: Action={action}")
-        print(sim_env_text.render())
+        print(cli_sim_env.render())
         steps += 1
-    print(f"Text simulation finished in {steps} steps with reward {reward}\n")
+    print(f"Process completed in {steps} steps with reward {reward}\n")
 
-    # 5. Evaluate the policy (following tutorial.py pattern)
+    # evaluate the optimal policy
     print("\n*** EVALUATING OPTIMAL POLICY ***")
     num_experiments = 100
     num_episodes = 10000
@@ -192,7 +194,7 @@ def part_two():
     steps_list = []
     
     for experiment in range(num_experiments):
-        if experiment % 10 == 0:  # Progress indicator
+        if experiment % 20 == 0:
             print(f"Running experiment {experiment+1}/{num_experiments}...")
         goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes)
         goals_list.append(goals)
@@ -223,10 +225,8 @@ def part_two():
 
 
 def main():
-    # TODO: feel free to change this as required
-    # TODO: also, check tutorial.py for some hints on how to implement your experiments
-    # part_one()
-    part_two()
+    part_one()
+    # part_two()
 
 if __name__ == "__main__":
     main() 
