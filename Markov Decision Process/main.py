@@ -21,13 +21,115 @@ except:
     print("\tpip install numpy")
     sys.exit(1)
 
+def create_frozen_lake_env(render_mode="ansi"):
+    # create and return FrozenLake environment
+    env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode=render_mode)
+    nS = env.observation_space.n  # number of states (8x8=64)
+    nA = env.action_space.n  # number of actions (four directions; 0:left, 1:down, 2:right, 3:up)
+    return env, nS, nA
+
+
+def evaluate_policy(env, policy, num_experiments=100, num_episodes=10000, progress_frequency=20, policy_name="POLICY"):
+    # evaluate a policy by running multiple experiments and return statistics
+    from tutorial import run_one_experiment
+    
+    goals_list = []  # list to store the number of times the goal is reached
+    steps_list = []  # list to store the number of steps taken to reach the goal for each experiment
+    
+    print(f"\n*** EVALUATING {policy_name} ***")
+    for experiment in range(num_experiments):
+        if experiment % progress_frequency == 0:  # show progress indicator (every 20 experiments)
+            print(f"Running experiment {experiment+1}/{num_experiments}...")
+        
+        goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes)
+        goals_list.append(goals)  # append the number of times the goal is reached
+        # preventing ZeroDivisionError when the goal is not reached
+        avg_steps_to_goal = (total_goal_steps / goals) if (goals > 0) else 0
+        # append the average number of steps taken to reach the goal
+        steps_list.append(avg_steps_to_goal)
+    
+    # calculate statistics
+    mean_goals = np.mean(goals_list)  # mean of the number of times the goal is reached
+    std_goals = np.std(goals_list)  # standard deviation of the number of times the goal is reached
+    mean_steps = np.mean(steps_list)  # mean of the average number of steps taken to reach the goal
+    
+    return goals_list, steps_list, mean_goals, std_goals, mean_steps
+
+
+def create_histogram(goals_list, mean_goals, std_goals, mean_steps, title_prefix, num_episodes=10000):
+    # create and display a histogram for policy evaluation results
+    plt.figure()
+    plt.hist(goals_list, bins=10, density=True)
+    plt.title(
+        f"Density Histogram of the Number of Episodes (out of {num_episodes:,}) Reaching the Goal State\n\n"
+        f"{title_prefix}\n[mean: {mean_goals:.2f}, stdev: {std_goals:.2f}, mean#steps: {mean_steps:.1f}]",
+        fontsize=8)
+    plt.xlabel(f'Number of Episodes Reaching Goal (out of {num_episodes:,})', fontsize=8)
+    plt.ylabel('Density', fontsize=8)
+    plt.show()
+
+
+def display_results(mean_goals, std_goals, mean_steps, num_episodes=10000, policy_name="POLICY"):
+    # display policy evaluation results in CLI
+    print(f"\n*** {policy_name} RESULTS ***:")
+    print(f"\tMean Goals: {mean_goals:>8.2f}/{num_episodes} episodes")
+    print(f"\tStd Goals:  {std_goals:>8.2f}")
+    print(f"\tMean Steps: {mean_steps:>8.2f} steps to goal")
+
+
+def simulate_policy(policy, nS, nA, visual=True, text=True):
+    # run both visual and text simulations of a policy
+    from tutorial import display_policy
+    
+    if visual:
+        print("\n Simulation following the optimal policy")
+        # using gymnasium's built-in FrozenLake
+        sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="human")
+        # reset the environment
+        sim_env.reset()
+        done = False
+        steps = 0
+
+        # run the simulation until the goal is reached
+        while not done:
+            # get current state of the environment
+            state = sim_env.get_wrapper_attr("s")
+            # get action from policy
+            action = policy[state]
+            # print the step, action and the state details
+            action_names = ['Left', 'Down', 'Right', 'Up']
+            print(f"Step {steps}: State={state}, Action={action} ({action_names[action]})")
+            # use the action in the simulation environment
+            next_state, reward, done, info, p = sim_env.step(action)
+            steps += 1
+        
+        print(f"Simulation finished in {steps} steps with reward {reward}")
+        sim_env.close()
+
+    if text:
+        # CLI version of the simulation
+        print("\n*** CLI version of the simulation ***")
+        cli_sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
+        cli_sim_env.reset()
+        done = False
+        steps = 0
+        print("Initial state:")
+        print(cli_sim_env.render())
+        
+        while not done:
+            state = cli_sim_env.get_wrapper_attr("s")
+            action = policy[state]
+            next_state, reward, done, info, p = cli_sim_env.step(action)
+            print(f"After step {steps}: Action={action}")
+            print(cli_sim_env.render())
+            steps += 1
+        print(f"Process completed in {steps} steps with reward {reward}\n")
+
 
 def part_one():
     from tutorial import generate_random_policy, run_one_experiment, display_policy
 
-    env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
-    nS = env.observation_space.n # number of states (8x8=64)
-    nA = env.action_space.n # number of actions (four directions; 0:left, 1:down, 2:right, 3:up)
+    env, nS, nA = create_frozen_lake_env()
 
     # 10 different seeds for reproducibility of random policy
     seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -42,21 +144,7 @@ def part_one():
         print(f"\n*** EVALUATING POLICY WITH SEED {seed} ***")
         # generate a random policy for each seed
         policy = generate_random_policy(nA, nS, seed=seed)
-        goals_list = [] # list to store the number of times the goal is reached
-        steps_list = [] # list to store the number of steps taken to reach the goal for each experiment
-        # run the experiment for each seed 10000 times
-        for experiment in range(num_experiments):
-            if experiment % 20 == 0:  # show progress indicator (every 20 experiments)
-                print(f"Running experiment {experiment+1}/{num_experiments} for seed {seed}...")
-            goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes)
-            goals_list.append(goals) # append the number of times the goal is reached
-            # preventing ZeroDivisionError when the goal is not reached
-            avg_steps_to_goal = (total_goal_steps / goals) if (goals > 0) else 0
-            # append the average number of steps taken to reach the goal
-            steps_list.append(avg_steps_to_goal)
-        mean_goals = np.mean(goals_list) # mean of the number of times the goal is reached
-        std_goals = np.std(goals_list) # standard deviation of the number of times the goal is reached
-        mean_steps = np.mean(steps_list) # mean of the average number of steps taken to reach the goal
+        goals_list, steps_list, mean_goals, std_goals, mean_steps = evaluate_policy(env, policy, num_experiments, num_episodes)
         # append the statistics of the policy to the policy_stats dictionary for the chart
         policy_stats.append({
             'seed': seed,
@@ -75,22 +163,13 @@ def part_one():
     for idx, policy in enumerate(top_two_policies, 1):
         print(f"\n *** Policy ***")
         print(display_policy(policy['policy'], nS))
-        plt.figure()
-        plt.hist(policy['goals_list'], bins=10, density=True)
-        plt.title(
-            f"Density Histogram of the Number of Episodes (out of 10,000) Reaching the Goal State\n\n"
-            f"Policy {idx} (seed={policy['seed']})\n[mean: {policy['mean_goals']:.2f}, stdev: {policy['std_goals']:.2f}, mean#steps: {policy['mean_steps']:.1f}]", fontsize=8)
-        plt.xlabel('Number of Episodes Reaching Goal (out of 10,000)', fontsize=8)
-        plt.ylabel('Density', fontsize=8)
-        plt.show()
+        create_histogram(policy['goals_list'], policy['mean_goals'], policy['std_goals'], policy['mean_steps'], f"Policy {idx} (seed={policy['seed']})")
 
 
 def part_two():
     from tutorial import run_one_experiment, display_policy
 
-    env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
-    nS = env.observation_space.n
-    nA = env.action_space.n
+    env, nS, nA = create_frozen_lake_env()
     discount_rate_gamma = 1.0
     convergence_threshold_theta = 1e-4
 
@@ -144,88 +223,20 @@ def part_two():
     print("\n*** Converged V(s) Table ***")
     print(display_policy(cur_value_function, nS))
 
-    print("\n Simulation following the optimal policy")
-    # using gymnasium's built-in FrozenLake
-    sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="human")
-    # reset the environment
-    sim_env.reset()
-    done = False
-    steps = 0
-
-    # run the simulation until the goal is reached
-    while not done:
-        # get current state of the environment
-        state = sim_env.get_wrapper_attr("s")
-        # get action from policy
-        action = policy[state]
-        # print the step, action and the state details
-        action_names = ['Left', 'Down', 'Right', 'Up']
-        print(f"Step {steps}: State={state}, Action={action} ({action_names[action]})")
-        # use the action in the simulation environment
-        next_state, reward, done, info, p = sim_env.step(action)
-        steps += 1
-    
-    print(f"Simulation finished in {steps} steps with reward {reward}")
-    sim_env.close()
-
-    # CLI version of the simulation
-    print("\n*** CLI version of the simulation ***")
-    cli_sim_env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
-    cli_sim_env.reset()
-    done = False
-    steps = 0
-    print("Initial state:")
-    print(cli_sim_env.render())
-    
-    while not done:
-        state = cli_sim_env.get_wrapper_attr("s")
-        action = policy[state]
-        next_state, reward, done, info, p = cli_sim_env.step(action)
-        print(f"After step {steps}: Action={action}")
-        print(cli_sim_env.render())
-        steps += 1
-    print(f"Process completed in {steps} steps with reward {reward}\n")
+    simulate_policy(policy, nS, nA)
 
     # evaluate the optimal policy
-    print("\n*** EVALUATING OPTIMAL POLICY ***")
-    num_experiments = 100
-    num_episodes = 10000
-    goals_list = []
-    steps_list = []
-    
-    for experiment in range(num_experiments):
-        if experiment % 20 == 0:
-            print(f"Running experiment {experiment+1}/{num_experiments}...")
-        goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes)
-        goals_list.append(goals)
-        avg_steps_to_goal = (total_goal_steps / goals) if (goals > 0) else 0
-        steps_list.append(avg_steps_to_goal)
-    
-    # calculate statistics
-    mean_goals = np.mean(goals_list)
-    std_goals = np.std(goals_list)
-    mean_steps = np.mean(steps_list)
+    goals_list, steps_list, mean_goals, std_goals, mean_steps = evaluate_policy(env, policy)
     
     # display results
-    print(f"\n*** OPTIMAL POLICY RESULTS ***:")
-    print(f"\tMean Goals: {mean_goals:>5.2f}/{num_episodes} episodes")
-    print(f"\tStd Goals:  {std_goals:>5.2f}")
-    print(f"\tMean Steps: {mean_steps:>5.2f} steps to goal")
+    display_results(mean_goals, std_goals, mean_steps)
 
     # plot histogram
-    plt.figure()
-    plt.hist(goals_list, bins=10, density=True)
-    plt.title(
-        f"Density Histogram of the Number of Episodes (out of 10,000) Reaching the Goal State\n\n"
-        f"Optimal Policy (Value Iteration)\n"
-        f"[mean: {mean_goals:.2f}, stdev: {std_goals:.2f}, mean#steps: {mean_steps:.1f}]",
-        fontsize=8)
-    plt.xlabel('Number of Episodes Reaching Goal (out of 10,000)', fontsize=8)
-    plt.ylabel('Density', fontsize=8)
-    plt.show()
+    create_histogram(goals_list, mean_goals, std_goals, mean_steps, "Optimal Policy (Value Iteration)")
+
 
 def main():
-    # part_one()
+    part_one()
     part_two()
 
 if __name__ == "__main__":
