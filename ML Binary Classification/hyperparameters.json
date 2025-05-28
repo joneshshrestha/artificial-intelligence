@@ -1,0 +1,47 @@
+{
+	"active_classifier": "logistic_classifier",
+	"hyperparameters": {
+		"cross_validation": {
+			"decision_tree": {
+				"max_depth": 8,
+				"criterion": "gini"
+			},
+			"random_forest": {
+				"n_trees": 5,
+				"max_depth": 5
+			},
+			"logistic_classifier": {
+				"penalty": "l2",
+				"C": 1.0
+			}
+		},
+		"grid_search": {
+			"decision_tree": {
+				"max_depth": [2, 4, 8, null],
+				"criterion": ["entropy", "gini"]
+			},
+			"random_forest": {
+				"n_trees": [5, 10, 50, 100],
+				"max_depth": [2, 4, 6]
+			},
+			"logistic_classifier": {
+				"penalty": [null, "l1", "l2"],
+				"C": [0.1, 0.5, 1.0, 2.0, 4.0]
+			}
+		},
+		"training": {
+			"decision_tree": {
+				"max_depth": null,
+				"criterion": "entropy"
+			},
+			"random_forest": {
+				"n_trees": 5,
+				"max_depth": 5
+			},
+			"logistic_classifier": {
+				"penalty": null,
+				"C": 1.0
+			}
+		}
+	}	
+}
