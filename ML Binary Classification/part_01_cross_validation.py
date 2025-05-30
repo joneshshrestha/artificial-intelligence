@@ -10,6 +10,7 @@
 import sys
 import numpy as np
 import pickle
+import time
 
 from auxiliary_functions import *
 
@@ -161,6 +162,10 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
     # Initialize lists to store metrics for each fold
     train_metrics_list = []
     validation_metrics_list = []
+    
+    # Initialize timing tracking
+    total_train_time = 0
+    total_validation_time = 0
 
     # 2) for each split ...
     for i in range(n_folds):
@@ -190,7 +195,11 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
         normalized_val_x, _ = apply_normalization(validation_x, scaler)
         
         #         2.3) train your classifier on the training split
+        train_start_time = time.time()
         classifier = train_classifier(classifier_name, hyper_params, normalized_train_x, train_y)
+        train_end_time = time.time()
+        fold_train_time = train_end_time - train_start_time
+        total_train_time += fold_train_time
         
         #         2.4) evaluate your classifier on the training split (compute and print metrics)
         train_predictions = classifier.predict(normalized_train_x)
@@ -199,7 +208,12 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
         print(classification_report(train_y, train_predictions))
         
         #         2.5) evaluate your classifier on the validation split (compute and print metrics)
+        val_start_time = time.time()
         val_predictions = classifier.predict(normalized_val_x)
+        val_end_time = time.time()
+        fold_val_time = val_end_time - val_start_time
+        total_validation_time += fold_val_time
+        
         val_report = classification_report(validation_y, val_predictions, output_dict=True)
         print("Validation Metrics:")
         print(classification_report(validation_y, val_predictions))
@@ -211,7 +225,7 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
     # 3) compute the averaged metrics
     #          5.1) compute and print training metrics
     #          5.2) compute and print validation metrics
-    final_metrics = {"train": {}, "validation": {}}
+    final_metrics = {"train": {}, "validation": {}, "time": {"train_time": total_train_time, "validation_time": total_validation_time}}
     metrics_data = {"train": train_metrics_list, "validation": validation_metrics_list}
     
     # iterate through the key value pairs in metrics_data (train and validation)
