@@ -74,9 +74,9 @@ def load_raw_dataset(dataset_filename: str) -> Tuple[np.ndarray, np.ndarray]:
     y = df.iloc[:, -1]  # Last column
     
     # 3) convert to numpy arrays with categorical mapping
-    # Convert categorical values: Yes->1.0, No->0.0, keep numeric as-is
-    dataset_x = X.replace({'Yes': 1.0, 'No': 0.0}).values.astype(float)
-    dataset_y = y.values
+    # Convert categorical values: Yes->1, No->0, keep numeric as-is
+    dataset_x = X.replace({'Yes': 1, 'No': 0}).astype(float).to_numpy()
+    dataset_y = y.to_numpy()
     
     # 4) return the numpy arrays as a tuple: (x, y)
     return dataset_x, dataset_y

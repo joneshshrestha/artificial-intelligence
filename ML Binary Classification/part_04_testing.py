@@ -4,7 +4,7 @@
 #  Created by: Kenny Davila Castellanos
 #              for CSC 480
 #
-#  MODIFIED BY: [Your NAME]
+#  MODIFIED BY: Jonesh Shrestha
 # ===============================================
 """
 
@@ -25,15 +25,46 @@ def main():
     in_normalizer_filename = sys.argv[2]
     in_classifier_filename = sys.argv[3]
 
-    # TODO: 1) Load your data
+    # 1) Load your data
+    print(f"Loading (testing) data from: {in_raw_data_filename}")
+    dataset_x, dataset_y = load_raw_dataset(in_raw_data_filename)
 
-    # TODO: 2) Load the normalizer
+    # 2) Load the normalizer
+    print(f"Loading trained normalizer from: {in_normalizer_filename}")
+    with open(in_normalizer_filename, 'rb') as f:
+        normalizer = pickle.load(f)
 
-    # TODO: 3) Load the classifier
+    # 3) Load the classifier
+    print(f"Loading trained classifier from: {in_classifier_filename}")
+    with open(in_classifier_filename, 'rb') as f:
+        classifier = pickle.load(f)
 
-    # TODO: 4) normalize the data ...
+    # 4) normalize the data ...
+    print("Normalizing test data using trained normalizer...")
+    normalized_x, _ = apply_normalization(dataset_x, normalizer)
 
-    # TODO: 5) evaluate your classifier on the testing dataset (compute and print metrics)
+    # 5) evaluate your classifier on the testing dataset (compute and print metrics)
+    print("\nEvaluating classifier on test data...")
+    test_predictions = classifier.predict(normalized_x)
+    
+    # print detailed classification report
+    print("Test Set Classification Report:")
+    print(classification_report(dataset_y, test_predictions))
+    
+    # get classification report as dictionary
+    test_report = classification_report(dataset_y, test_predictions, output_dict=True)
+    
+    # print metrics summary 
+    print(f"\nTest Set Summary:")
+    print(f"Accuracy: {test_report['accuracy']:.4f}")
+    print(f"Macro Avg - Precision: {test_report['macro avg']['precision']:.4f}, "
+          f"Recall: {test_report['macro avg']['recall']:.4f}, "
+          f"F1-Score: {test_report['macro avg']['f1-score']:.4f}")
+    print(f"Weighted Avg - Precision: {test_report['weighted avg']['precision']:.4f}, "
+          f"Recall: {test_report['weighted avg']['recall']:.4f}, "
+          f"F1-Score: {test_report['weighted avg']['f1-score']:.4f}")
+
+    print("\nTesting process completed successfully!")
 
     # FINISHED!
 
