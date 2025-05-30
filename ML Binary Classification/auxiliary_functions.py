@@ -103,14 +103,14 @@ def apply_normalization(raw_dataset: np.ndarray, scaler: StandardScaler | None) 
     # use or create standard scaler to normalize data
     if scaler is None:
         # Create new StandardScaler and fit it on the dataset
-        Scaler = StandardScaler()
-        new_X = Scaler.fit_transform(raw_dataset)
+        scaler = StandardScaler()
+        new_X = scaler.fit_transform(raw_dataset)
     else:
         # Use existing fitted scaler to transform the dataset
-        new_X = Scaler.transform(raw_dataset)
+        new_X = scaler.transform(raw_dataset)
     
     # 2) return the normalized data AND the scaler
-    return new_X, Scaler
+    return new_X, scaler
 
 
 # =========================================================================
