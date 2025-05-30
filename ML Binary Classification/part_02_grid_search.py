@@ -9,7 +9,6 @@
 
 import sys
 import itertools
-import time
 
 from auxiliary_functions import *
 from part_01_cross_validation import cross_validation, custom_metric_print
@@ -39,31 +38,17 @@ def main():
     grid_search_hparams = config["hyperparameters"]["grid_search"]
     
     # 2) Load your data
-    # Use the provided filename as a pattern to generate all required dataset sizes
-    dataset = ["small", "medium", "large", "very_large"]
+    filename = in_raw_data_filename  # e.g. "training_data_{}.csv"
+    
     datasets = {}
-    
-    # extract pattern from provided filename  (“training_data_” + [small/medium/large/very_large] + “.csv”)
-    filename = in_raw_data_filename
-    # replace size with placeholder
-    for size in dataset:
-        if size in filename:
-            filename = filename.replace(size, "{}")
-            break
-    else:
-        # else use the standard pattern
-        filename = "training_data_{}.csv"
-    
-    # use the template to generate all required dataset sizes
-    for name in dataset:
-        filename = filename.format(name)
-        datasets[name] = load_raw_dataset(filename)
+    for name in ["small", "medium", "large", "very_large"]:
+        datasets[name] = load_raw_dataset(filename.format(name))
 
     # 3) generate a combination of parameters (check itertools.product)
     all_combinations = []
     # loops over every dataset and every hyperparameter combination
     # decision Tree combinations
-    for dataset_name in dataset:
+    for dataset_name in datasets.keys():
         for params in itertools.product(grid_search_hparams["decision_tree"]["criterion"], 
         grid_search_hparams["decision_tree"]["max_depth"]):
             all_combinations.append({
@@ -73,7 +58,7 @@ def main():
             })
     
     # random Forest combinations
-    for dataset_name in dataset:
+    for dataset_name in datasets.keys():
         for params in itertools.product(grid_search_hparams["random_forest"]["n_trees"], 
         grid_search_hparams["random_forest"]["max_depth"]):
             all_combinations.append({
@@ -83,7 +68,7 @@ def main():
             })
     
     # logistic Regression combinations
-    for dataset_name in dataset:
+    for dataset_name in datasets.keys():
         for params in itertools.product(grid_search_hparams["logistic_classifier"]["penalty"], 
         grid_search_hparams["logistic_classifier"]["C"]):
             all_combinations.append({
@@ -94,7 +79,7 @@ def main():
 
     print(f"Total: {len(all_combinations)} configurations")
 
-    # TODO: 4) Use the combinations of parameters to run a grid search
+    # 4) Use the combinations of parameters to run a grid search
     best_config = None
     best_f1_score = -1
     best_results = None
@@ -145,7 +130,7 @@ def main():
             best_config = combination
             best_results = result_entry
 
-    # TODO: 4) print the best parameters found (based on highest validation macro f-1 score)
+    # 5) print the best parameters found (based on highest validation macro f-1 score)
     print("\n" + "="*80)
     print("GRID SEARCH COMPLETED")
     print("="*80)
@@ -169,7 +154,7 @@ def main():
     print(f"\t\t Macro Avg F1-Score: {best_results['val_macro_f1']:.4f}")
     print(f"\t\t Total Time: {best_results['total_time']:.2f}s")
     
-    # Print summary table for each classifier type
+    # print summary table for each classifier type
     print("\n" + "="*100)
     print("RESULTS SUMMARY TABLES")
     print("="*100)
