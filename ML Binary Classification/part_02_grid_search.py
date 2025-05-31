@@ -162,7 +162,7 @@ def main():
     # Decision Trees Table
     print("\nTable 1. Results Table for Decision Trees")
     print("-" * 140)
-    print(f"{'Train Dataset':<17}{'Criterion':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
+    print("Train Dataset\tCriterion\tDepth\tTrain Acc.\tVal. Acc.\tVal. Avg Rec.\tVal. Avg Prec.\tVal. Avg F1\tTime Train\tTime Val.")
     print("-" * 140)
     
     for result in all_results:
@@ -170,15 +170,15 @@ def main():
             comb = result['combination']
             train_time_str = f"{result['train_time']:.4f} s"
             val_time_str = f"{result['validation_time']:.4f} s"
-            print(f"{comb['dataset']:<17}{comb['config']['criterion']:<13}{str(comb['config']['max_depth']):<9}"
-                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
-                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
-                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
+            print(f"{comb['dataset']}\t{comb['config']['criterion']}\t{str(comb['config']['max_depth'])}\t"
+                  f"{result['train_accuracy']:.4f}\t{result['val_accuracy']:.4f}\t"
+                  f"{result['val_macro_recall']:.4f}\t{result['val_macro_precision']:.4f}\t"
+                  f"{result['val_macro_f1']:.4f}\t{train_time_str}\t{val_time_str}")
 
     # Random Forest Table  
     print("\nTable 2. Results Table for Random Forest")
     print("-" * 140)
-    print(f"{'Train Dataset':<17}{'N Trees':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
+    print("Train Dataset\tN Trees\tDepth\tTrain Acc.\tVal. Acc.\tVal. Avg Rec.\tVal. Avg Prec.\tVal. Avg F1\tTime Train\tTime Val.")
     print("-" * 140)
     
     for result in all_results:
@@ -186,15 +186,15 @@ def main():
             comb = result['combination']
             train_time_str = f"{result['train_time']:.4f} s"
             val_time_str = f"{result['validation_time']:.4f} s"
-            print(f"{comb['dataset']:<17}{comb['config']['n_trees']:<13}{comb['config']['max_depth']:<9}"
-                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
-                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
-                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
+            print(f"{comb['dataset']}\t{comb['config']['n_trees']}\t{comb['config']['max_depth']}\t"
+                  f"{result['train_accuracy']:.4f}\t{result['val_accuracy']:.4f}\t"
+                  f"{result['val_macro_recall']:.4f}\t{result['val_macro_precision']:.4f}\t"
+                  f"{result['val_macro_f1']:.4f}\t{train_time_str}\t{val_time_str}")
 
     # Logistic Regression Table
     print("\nTable 3. Results Table for Logistic Regression")
     print("-" * 140)
-    print(f"{'Train Dataset':<17}{'Penalty':<13}{'C':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
+    print("Train Dataset\tPenalty\tC\tTrain Acc.\tVal. Acc.\tVal. Avg Rec.\tVal. Avg Prec.\tVal. Avg F1\tTime Train\tTime Val.")
     print("-" * 140)
     
     for result in all_results:
@@ -203,10 +203,10 @@ def main():
             penalty_str = str(comb['config']['penalty']) if comb['config']['penalty'] is not None else "None"
             train_time_str = f"{result['train_time']:.4f} s"
             val_time_str = f"{result['validation_time']:.4f} s"
-            print(f"{comb['dataset']:<17}{penalty_str:<13}{comb['config']['C']:<9}"
-                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
-                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
-                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
+            print(f"{comb['dataset']}\t{penalty_str}\t{comb['config']['C']}\t"
+                  f"{result['train_accuracy']:.4f}\t{result['val_accuracy']:.4f}\t"
+                  f"{result['val_macro_recall']:.4f}\t{result['val_macro_precision']:.4f}\t"
+                  f"{result['val_macro_f1']:.4f}\t{train_time_str}\t{val_time_str}")
 
     # FINISHED!
 
