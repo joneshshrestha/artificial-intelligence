@@ -124,7 +124,7 @@ def main():
         custom_metric_print(cv_results)
         print(f"Summary - Validation Macro F1: {val_macro_f1:.4f}, Total Time: {total_time:.2f}s")
         
-        # Check if this is the best configuration
+        # check if this is the best configuration
         if val_macro_f1 > best_f1_score:
             best_f1_score = val_macro_f1
             best_config = combination
@@ -140,14 +140,14 @@ def main():
     print(f"\tParameters: {best_config['config']}")
     print(f"\tBest Validation Macro F1-Score: {best_f1_score:.4f}")
     
-    print(f"\t-> Best configuration Results (Training):")
+    print(f"\t Best configuration Results (Training):")
     print(f"\t\t Accuracy: {best_results['train_accuracy']:.4f}")
     train_results = best_results['cv_results']['train']
     print(f"\t\t Macro Avg Recall: {train_results['macro avg']['recall']:.4f}")
     print(f"\t\t Macro Avg Precision: {train_results['macro avg']['precision']:.4f}")
     print(f"\t\t Macro Avg F1-Score: {train_results['macro avg']['f1-score']:.4f}")
     
-    print(f"\t-> Best configuration Results (Validation):")
+    print(f"\t Best configuration Results (Validation):")
     print(f"\t\t Accuracy: {best_results['val_accuracy']:.4f}")
     print(f"\t\t Macro Avg Recall: {best_results['val_macro_recall']:.4f}")
     print(f"\t\t Macro Avg Precision: {best_results['val_macro_precision']:.4f}")
@@ -162,45 +162,51 @@ def main():
     # Decision Trees Table
     print("\nTable 1. Results Table for Decision Trees")
     print("-" * 120)
-    print(f"{'Train Dataset':<12} {'Criterion':<10} {'Depth':<8} {'Train Acc.':<10} {'Val. Acc.':<10} {'Val. Avg Rec.':<12} {'Val. Avg Prec.':<12} {'Val. Avg F1':<10} {'Time Train':<10} {'Time Val.':<10}")
+    print(f"{'Train Dataset':<17}{'Criterion':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
     print("-" * 120)
     
     for result in all_results:
         if result['combination']['classifier'] == 'decision_tree':
             comb = result['combination']
-            print(f"{comb['dataset']:<12} {comb['config']['criterion']:<10} {str(comb['config']['max_depth']):<8} "
-                  f"{result['train_accuracy']:<10.4f} {result['val_accuracy']:<10.4f} "
-                  f"{result['val_macro_recall']:<12.4f} {result['val_macro_precision']:<12.4f} "
-                  f"{result['val_macro_f1']:<10.4f} {result['train_time']:<10.4f} {result['validation_time']:<10.4f}")
+            train_time_str = f"{result['train_time']:.4f} s"
+            val_time_str = f"{result['validation_time']:.4f} s"
+            print(f"{comb['dataset']:<17}{comb['config']['criterion']:<13}{str(comb['config']['max_depth']):<9}"
+                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
+                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
+                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
 
     # Random Forest Table  
     print("\nTable 2. Results Table for Random Forest")
     print("-" * 120)
-    print(f"{'Train Dataset':<12} {'N Trees':<8} {'Depth':<8} {'Train Acc.':<10} {'Val. Acc.':<10} {'Val. Avg Rec.':<12} {'Val. Avg Prec.':<12} {'Val. Avg F1':<10} {'Time Train':<10} {'Time Val.':<10}")
+    print(f"{'Train Dataset':<17}{'N Trees':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
     print("-" * 120)
     
     for result in all_results:
         if result['combination']['classifier'] == 'random_forest':
             comb = result['combination']
-            print(f"{comb['dataset']:<12} {comb['config']['n_trees']:<8} {comb['config']['max_depth']:<8} "
-                  f"{result['train_accuracy']:<10.4f} {result['val_accuracy']:<10.4f} "
-                  f"{result['val_macro_recall']:<12.4f} {result['val_macro_precision']:<12.4f} "
-                  f"{result['val_macro_f1']:<10.4f} {result['train_time']:<10.4f} {result['validation_time']:<10.4f}")
+            train_time_str = f"{result['train_time']:.4f} s"
+            val_time_str = f"{result['validation_time']:.4f} s"
+            print(f"{comb['dataset']:<17}{comb['config']['n_trees']:<13}{comb['config']['max_depth']:<9}"
+                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
+                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
+                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
 
     # Logistic Regression Table
     print("\nTable 3. Results Table for Logistic Regression")
     print("-" * 120)
-    print(f"{'Train Dataset':<12} {'Penalty':<8} {'C':<8} {'Train Acc.':<10} {'Val. Acc.':<10} {'Val. Avg Rec.':<12} {'Val. Avg Prec.':<12} {'Val. Avg F1':<10} {'Time Train':<10} {'Time Val.':<10}")
+    print(f"{'Train Dataset':<17}{'Penalty':<13}{'C':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
     print("-" * 120)
     
     for result in all_results:
         if result['combination']['classifier'] == 'logistic_classifier':
             comb = result['combination']
             penalty_str = str(comb['config']['penalty']) if comb['config']['penalty'] is not None else "None"
-            print(f"{comb['dataset']:<12} {penalty_str:<8} {comb['config']['C']:<8} "
-                  f"{result['train_accuracy']:<10.4f} {result['val_accuracy']:<10.4f} "
-                  f"{result['val_macro_recall']:<12.4f} {result['val_macro_precision']:<12.4f} "
-                  f"{result['val_macro_f1']:<10.4f} {result['train_time']:<10.4f} {result['validation_time']:<10.4f}")
+            train_time_str = f"{result['train_time']:.4f} s"
+            val_time_str = f"{result['validation_time']:.4f} s"
+            print(f"{comb['dataset']:<17}{penalty_str:<13}{comb['config']['C']:<9}"
+                  f"{result['train_accuracy']:<14.4f}{result['val_accuracy']:<13.4f}"
+                  f"{result['val_macro_recall']:<17.4f}{result['val_macro_precision']:<18.4f}"
+                  f"{result['val_macro_f1']:<15.4f}{train_time_str:<14}{val_time_str:<13}")
 
     # FINISHED!
 
