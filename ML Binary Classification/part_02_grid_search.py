@@ -161,9 +161,9 @@ def main():
     
     # Decision Trees Table
     print("\nTable 1. Results Table for Decision Trees")
-    print("-" * 120)
+    print("-" * 140)
     print(f"{'Train Dataset':<17}{'Criterion':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
-    print("-" * 120)
+    print("-" * 140)
     
     for result in all_results:
         if result['combination']['classifier'] == 'decision_tree':
@@ -177,9 +177,9 @@ def main():
 
     # Random Forest Table  
     print("\nTable 2. Results Table for Random Forest")
-    print("-" * 120)
+    print("-" * 140)
     print(f"{'Train Dataset':<17}{'N Trees':<13}{'Depth':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
-    print("-" * 120)
+    print("-" * 140)
     
     for result in all_results:
         if result['combination']['classifier'] == 'random_forest':
@@ -193,9 +193,9 @@ def main():
 
     # Logistic Regression Table
     print("\nTable 3. Results Table for Logistic Regression")
-    print("-" * 120)
+    print("-" * 140)
     print(f"{'Train Dataset':<17}{'Penalty':<13}{'C':<9}{'Train Acc.':<14}{'Val. Acc.':<13}{'Val. Avg Rec.':<17}{'Val. Avg Prec.':<18}{'Val. Avg F1':<15}{'Time Train':<14}{'Time Val.':<13}")
-    print("-" * 120)
+    print("-" * 140)
     
     for result in all_results:
         if result['combination']['classifier'] == 'logistic_classifier':
