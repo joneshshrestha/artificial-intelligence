@@ -31,16 +31,16 @@
     },
     "training": {
       "decision_tree": {
-        "max_depth": null,
+        "max_depth": 4,
         "criterion": "entropy"
       },
       "random_forest": {
-        "n_trees": 5,
-        "max_depth": 5
+        "n_trees": 50,
+        "max_depth": 2
       },
       "logistic_classifier": {
         "penalty": null,
-        "C": 1.0
+        "C": 0.5
       }
     }
   }
