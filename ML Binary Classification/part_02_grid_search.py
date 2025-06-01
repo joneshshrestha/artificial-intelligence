@@ -80,10 +80,14 @@ def main():
     print(f"Total: {len(all_combinations)} configurations")
 
     # 4) Use the combinations of parameters to run a grid search
-    best_config = None
-    best_f1_score = -1
-    best_results = None
     all_results = []
+    
+    # Track best configuration for each classifier type
+    best_configs_by_classifier = {
+        'decision_tree': {'config': None, 'f1_score': -1, 'results': None, 'dataset': None},
+        'random_forest': {'config': None, 'f1_score': -1, 'results': None, 'dataset': None},
+        'logistic_classifier': {'config': None, 'f1_score': -1, 'results': None, 'dataset': None}
+    }
 
     # loop over every combination
     for i, combination in enumerate(all_combinations):
@@ -124,36 +128,31 @@ def main():
         custom_metric_print(cv_results)
         print(f"Summary - Validation Macro F1: {val_macro_f1:.4f}, Total Time: {total_time:.2f}s")
         
-        # check if this is the best configuration
-        if val_macro_f1 > best_f1_score:
-            best_f1_score = val_macro_f1
-            best_config = combination
-            best_results = result_entry
+        # Track best configuration for each classifier type
+        classifier_type = combination['classifier']
+        if val_macro_f1 > best_configs_by_classifier[classifier_type]['f1_score']:
+            best_configs_by_classifier[classifier_type]['config'] = combination['config']
+            best_configs_by_classifier[classifier_type]['f1_score'] = val_macro_f1
+            best_configs_by_classifier[classifier_type]['results'] = result_entry
+            best_configs_by_classifier[classifier_type]['dataset'] = combination['dataset']
 
-    # 5) print the best parameters found (based on highest validation macro f-1 score)
+    # 5) Print the best parameters found for each classifier
     print("\n" + "="*80)
     print("GRID SEARCH COMPLETED")
     print("="*80)
     
-    print("\n\nBest parameters found")
-    print(f"\tBest configuration: {best_config['classifier']} on {best_config['dataset']} dataset")
-    print(f"\tParameters: {best_config['config']}")
-    print(f"\tBest Validation Macro F1-Score: {best_f1_score:.4f}")
+    # Print best configuration for each classifier type
+    print("\n" + "="*80)
+    print("BEST PARAMETERS FOR EACH CLASSIFIER")
+    print("="*80)
     
-    print(f"\t Best configuration Results (Training):")
-    print(f"\t\t Accuracy: {best_results['train_accuracy']:.4f}")
-    train_results = best_results['cv_results']['train']
-    print(f"\t\t Macro Avg Recall: {train_results['macro avg']['recall']:.4f}")
-    print(f"\t\t Macro Avg Precision: {train_results['macro avg']['precision']:.4f}")
-    print(f"\t\t Macro Avg F1-Score: {train_results['macro avg']['f1-score']:.4f}")
-    
-    print(f"\t Best configuration Results (Validation):")
-    print(f"\t\t Accuracy: {best_results['val_accuracy']:.4f}")
-    print(f"\t\t Macro Avg Recall: {best_results['val_macro_recall']:.4f}")
-    print(f"\t\t Macro Avg Precision: {best_results['val_macro_precision']:.4f}")
-    print(f"\t\t Macro Avg F1-Score: {best_results['val_macro_f1']:.4f}")
-    print(f"\t\t Total Time: {best_results['total_time']:.2f}s")
-    
+    for classifier_name, best_info in best_configs_by_classifier.items():
+        if best_info['config'] is not None:
+            print(f"\n{classifier_name.upper()}:")
+            print(f"\tBest Dataset: {best_info['dataset']}")
+            print(f"\tBest Parameters: {best_info['config']}")
+            print(f"\tBest F1-Score: {best_info['f1_score']:.4f}")
+
     # print summary table for each classifier type
     print("\n" + "="*100)
     print("RESULTS SUMMARY TABLES")
