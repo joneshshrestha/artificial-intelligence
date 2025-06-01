@@ -10,6 +10,7 @@
 
 import sys
 import pickle
+import time
 
 from auxiliary_functions import *
 
@@ -45,7 +46,10 @@ def main():
 
     # 5) evaluate your classifier on the testing dataset (compute and print metrics)
     print("\nEvaluating classifier on test data...")
+    inference_start = time.time()
     test_predictions = classifier.predict(normalized_x)
+    inference_end = time.time()
+    inference_time = inference_end - inference_start
     
     # print detailed classification report
     print("Test Set Classification Report:")
@@ -63,6 +67,7 @@ def main():
     print(f"Weighted Avg - Precision: {test_report['weighted avg']['precision']:.4f}, "
           f"Recall: {test_report['weighted avg']['recall']:.4f}, "
           f"F1-Score: {test_report['weighted avg']['f1-score']:.4f}")
+    print(f"Test Inference Time: {inference_time:.4f} seconds")
 
     print("\nTesting process completed successfully!")
 

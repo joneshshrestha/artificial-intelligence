@@ -10,6 +10,7 @@
 
 import sys
 import pickle
+import time
 
 from auxiliary_functions import *
 
@@ -42,12 +43,19 @@ def main():
 
     # 4) train your classifier on the training split
     print(f"Training {classifier_name} classifier...")
+    start_time = time.time()
     classifier = train_classifier(classifier_name, class_config, new_X, dataset_y)
+    end_time = time.time()
+    training_time = end_time - start_time
     print("Training completed.")
+    print(f"Training Time: {training_time:.4f} seconds")
 
     # 5) evaluate your classifier on the training dataset (compute and print metrics)
     print("\nEvaluating classifier on training data...")
+    inference_start = time.time()
     train_predictions = classifier.predict(new_X)
+    inference_end = time.time()
+    inference_time = inference_end - inference_start
     
     # print metrics using classification report
     print("Training Set Classification Report:")
@@ -65,6 +73,7 @@ def main():
     print(f"Weighted Avg - Precision: {train_report['weighted avg']['precision']:.4f}, "
           f"Recall: {train_report['weighted avg']['recall']:.4f}, "
           f"F1-Score: {train_report['weighted avg']['f1-score']:.4f}")
+    print(f"Training Inference Time: {inference_time:.4f} seconds")
 
     # 6) save the classifier and the standard scaler ... (pickle library is fine)
     print(f"Saving trained classifier to: {out_classifier_filename}")
