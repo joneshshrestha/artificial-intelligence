@@ -217,7 +217,7 @@ def train_classifier(classifier_name: str, hyper_params: dict, train_split_X: np
             max_depth=hyper_params.get('max_depth')
         )
     elif classifier_name == "logistic_classifier":
-        # Use 'saga' solver for all penalties
+        # use 'saga' solver for all penalties
         classifier = LogisticRegression(
             penalty=hyper_params.get('penalty'),
             C=hyper_params.get('C'),
