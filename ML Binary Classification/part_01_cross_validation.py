@@ -36,7 +36,7 @@ def custom_metric_print(metrics_dict):
     print("CROSS-VALIDATION RESULTS - CUSTOM FORMATTED")
     print("="*80)
     
-    # Print header for the table
+    # print header for the table
     print(f"{'Dataset':<12} {'Class':<12} {'Precision':<10} {'Recall':<10} {'F1-Score':<10} {'Support':<10}")
     print("-" * 80)
     
@@ -47,7 +47,7 @@ def custom_metric_print(metrics_dict):
         dataset_metrics = metrics_dict[dataset_type]
         dataset_label = dataset_type.capitalize()
         
-        # Print class-specific metrics
+        # print class-specific metrics
         for class_name in sorted(dataset_metrics.keys()):
             if class_name not in ['accuracy', 'macro avg', 'weighted avg']:
                 class_metrics = dataset_metrics[class_name]
@@ -58,14 +58,14 @@ def custom_metric_print(metrics_dict):
                       f"{int(class_metrics['support']):<10}")
                 dataset_label = ""  # Only show dataset label once per dataset
         
-        # Print accuracy
+        # print accuracy
         if 'accuracy' in dataset_metrics:
             print(f"{dataset_label:<12} {'Accuracy':<12} "
                   f"{'':<10} {'':<10} "
                   f"{dataset_metrics['accuracy']:<10.4f} "
                   f"{'':<10}")
         
-        # Print macro average
+        # print macro average
         if 'macro avg' in dataset_metrics:
             macro_metrics = dataset_metrics['macro avg']
             print(f"{'':<12} {'Macro Avg':<12} "
@@ -74,7 +74,7 @@ def custom_metric_print(metrics_dict):
                   f"{macro_metrics['f1-score']:<10.4f} "
                   f"{int(macro_metrics['support']):<10}")
         
-        # Print weighted average
+        # print weighted average
         if 'weighted avg' in dataset_metrics:
             weighted_metrics = dataset_metrics['weighted avg']
             print(f"{'':<12} {'Weighted Avg':<12} "
@@ -84,11 +84,11 @@ def custom_metric_print(metrics_dict):
                   f"{int(weighted_metrics['support']):<10}")
         
         if dataset_type == 'train':
-            print("-" * 80)  # Separator between train and validation
+            print("-" * 80)  # separator between train and validation
     
     print("="*80)
     
-    # Summary comparison
+    # summary comparison
     if 'train' in metrics_dict and 'validation' in metrics_dict:
         print("\nSUMMARY COMPARISON:")
         print(f"{'Metric':<20} {'Training':<15} {'Validation':<15} {'Difference':<15}")
@@ -159,11 +159,11 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
     # 1) split the dataset ....
     splits = split_dataset(raw_x, raw_y, n_folds)
     
-    # Initialize lists to store metrics for each fold
+    # initialize lists to store metrics for each fold
     train_metrics_list = []
     validation_metrics_list = []
     
-    # Initialize timing tracking
+    # initialize timing tracking
     total_train_time = 0
     total_validation_time = 0
 
@@ -187,11 +187,11 @@ def cross_validation(raw_x: np.ndarray, raw_y: np.ndarray, n_folds: int, classif
         train_x = np.concatenate(train_x_list)
         train_y = np.concatenate(train_y_list)
         
-        # Normalize training data (fit new scaler)
+        # normalize training data (fit new scaler)
         normalized_train_x, scaler = apply_normalization(train_x, None)
         
         #         2.2) prepare the split validation dataset (normalize)
-        # Use the same scaler fitted on training data
+        # use the same scaler fitted on training data
         normalized_val_x, _ = apply_normalization(validation_x, scaler)
         
         #         2.3) train your classifier on the training split
