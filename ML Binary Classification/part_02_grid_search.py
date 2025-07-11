@@ -1,12 +1,3 @@
-"""
-# ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 480
-#
-#  MODIFIED BY: Jonesh Shrestha
-# ===============================================
-"""
-
 import sys
 import itertools
 
@@ -207,7 +198,6 @@ def main():
                   f"{result['val_macro_recall']:.4f}\t{result['val_macro_precision']:.4f}\t"
                   f"{result['val_macro_f1']:.4f}\t{train_time_str}\t{val_time_str}")
 
-    # FINISHED!
 
 
 if __name__ == "__main__":
