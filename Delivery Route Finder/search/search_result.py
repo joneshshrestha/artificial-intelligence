@@ -1,9 +1,6 @@
-
 """
 # ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 380/480
-# DO NOT MODIFY AND/OR REDISTRIBUTE
+#  Search Results class
 # ===============================================
 """
 
@@ -14,8 +11,15 @@ from typing import List
     to the results of any given search.
 """
 
+
 class SearchResults:
-    def __init__(self, solution_path: List[str] | None, solution_cost: float | None, nodes_reached: int, nodes_explored: int):
+    def __init__(
+        self,
+        solution_path: List[str] | None,
+        solution_cost: float | None,
+        nodes_reached: int,
+        nodes_explored: int,
+    ):
         self.__solution_path = solution_path
         self.__solution_cost = solution_cost
         self.__nodes_reached = nodes_reached

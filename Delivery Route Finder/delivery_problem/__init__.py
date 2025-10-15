@@ -1,9 +1,7 @@
-
 # =========================================
-#  Created by: Kenny Davila Castellanos
-#      For: CSC 480 - AI 1
+#  Delivery Problem Package
 #
-# DO NOT MODIFY
+#  Author: Kenny Davila Castellanos
 # =========================================
 
 from .state import State
@@ -11,4 +9,4 @@ from .map import CityMap
 from .problem import Problem
 from .search_request import SearchRequest
 
-__all__ = ['State', 'CityMap', 'Problem', 'SearchRequest']
+__all__ = ["State", "CityMap", "Problem", "SearchRequest"]

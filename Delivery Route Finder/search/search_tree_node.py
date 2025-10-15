@@ -1,11 +1,9 @@
+"""
+# ===============================================
+#  Search Tree Node class
+# ===============================================
+"""
 
-"""
-# ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 380/480
-# DO NOT MODIFY AND/OR REDISTRIBUTE
-# ===============================================
-"""
 from typing import Self, List
 
 """
@@ -36,12 +34,14 @@ from typing import Self, List
     have the highest priority (FIFO) for those ties.     
 """
 
+
 class SearchTreeNode:
     NodeCount = 0
 
     """
         Constructor
     """
+
     def __init__(self, parent: Self | None, action: str | None, state, path_cost):
         self.__parent = parent
         self.__action = action
@@ -69,6 +69,7 @@ class SearchTreeNode:
         main sorting criteria (the priority) needs to be defined externally
         in accordance to the search algorithm being used.  
     """
+
     def __lt__(self, other):
         # by default, simply sort nodes by "age", older nodes come first ...
         return self.__node_id < other.__node_id
@@ -79,6 +80,7 @@ class SearchTreeNode:
         that need to be executed to reach the current state starting from
         the root node (the initial state). 
     """
+
     def path_to_root(self) -> List[str]:
         full_path = []
         current = self

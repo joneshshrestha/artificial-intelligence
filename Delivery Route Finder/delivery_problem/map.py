@@ -1,11 +1,3 @@
-
-"""
-# ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 380/480
-#  DO NOT MODIFY / DO NOT REDISTRIBUTE!!
-# ===============================================
-"""
 import json
 import math
 from typing import List, Dict, Tuple
@@ -23,10 +15,17 @@ from typing import List, Dict, Tuple
 
 class CityMap:
     """
-        Constructor for CityMap class. It takes all the info provided in the JSON file
+    Constructor for CityMap class. It takes all the info provided in the JSON file
     """
-    def __init__(self, name: str, locations: List[str], connections: Dict[str, Dict[str, float]],
-                 loc_positions: Dict[str, Tuple[float, float]], map_scale: float):
+
+    def __init__(
+        self,
+        name: str,
+        locations: List[str],
+        connections: Dict[str, Dict[str, float]],
+        loc_positions: Dict[str, Tuple[float, float]],
+        map_scale: float,
+    ):
         self.__name = name
         self.__locations = locations
         self.__connections = connections
@@ -35,11 +34,15 @@ class CityMap:
 
         # validate ...
         if len(self.__locations) != len(self.__connections):
-            raise Exception("Invalid map: The number of locations does not match the number of origins for connections")
+            raise Exception(
+                "Invalid map: The number of locations does not match the number of origins for connections"
+            )
 
         common = set(self.__locations).intersection(self.__connections.keys())
         if len(common) != len(self.__locations):
-            raise Exception("Invalid map: Mismatch in locations and origins of connections")
+            raise Exception(
+                "Invalid map: Mismatch in locations and origins of connections"
+            )
 
         # Pre-computing pairwise straight line distances
         self.__pairwise_distance_cache = {src: {} for src in self.__locations}
@@ -57,12 +60,14 @@ class CityMap:
     """
         Returns the name of the city
     """
+
     def get_name(self):
         return self.__name
 
     """
         Retrieves the list of map locations
     """
+
     def get_locations(self):
         return self.__locations
 
@@ -70,6 +75,7 @@ class CityMap:
         Returns a list of the neighbors of a given location. 
         It throws an error if the location does not exists on the map.
     """
+
     def get_neighbors(self, location: str):
         if location in self.__connections:
             return list(self.__connections[location].keys())
@@ -82,6 +88,7 @@ class CityMap:
         If the source and destination are not directly connected, it returns null.
         Otherwise, it returns the value as provided in the original map file.
     """
+
     def get_cost(self, src: str, dst: str):
         if src in self.__connections:
             if dst in self.__connections[src]:
@@ -101,11 +108,14 @@ class CityMap:
         which represents a lower-bound for the real distance between the two locations.
         The locations in question do not need to be directly connected.
     """
+
     def __compute_straight_line_distance(self, src, dst) -> float:
         src_x, src_y = self.__map_positions[src]
         dst_x, dst_y = self.__map_positions[dst]
 
-        raw_distance = math.sqrt(math.pow(src_x - dst_x, 2.0) + math.pow(src_y - dst_y, 2.0))
+        raw_distance = math.sqrt(
+            math.pow(src_x - dst_x, 2.0) + math.pow(src_y - dst_y, 2.0)
+        )
         scaled_distance = raw_distance / self.__map_scale
 
         return scaled_distance
@@ -115,6 +125,7 @@ class CityMap:
         To avoid recomputing this info, the constructor will create a cache. 
         This function simply returns the cached values          
     """
+
     def get_straight_line_distance(self, src, dst) -> float:
         # simply use the cached values
         return self.__pairwise_distance_cache[src][dst]
@@ -122,6 +133,7 @@ class CityMap:
     """
         Creates a new instance of a CityMap based on a JSON file. 
     """
+
     @staticmethod
     def FromFile(filename: str):
         with open(filename, "r", encoding="utf-8") as in_file:
