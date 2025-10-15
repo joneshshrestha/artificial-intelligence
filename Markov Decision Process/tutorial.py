@@ -1,9 +1,6 @@
 import sys
 import math
 
-# NOTE THAT THESE TRY EXCEPTS ARE ONLY ADDED SO THAT YOU KNOW
-# THAT YOU MUST INSTALL THESE LIBRARIES IF YOU DON"T ALREADY HAVE THEM
-
 try:
     import gymnasium as gym
 except:
@@ -24,6 +21,8 @@ except:
 """
     Function to create a fixed deterministic policy
 """
+
+
 def generate_random_policy(num_actions, num_states, seed=None):
     """
     A policy is a 1D array of length # of states, where each element is a
@@ -38,6 +37,8 @@ def generate_random_policy(num_actions, num_states, seed=None):
 """
     Function to run one experiment for a given number of episodes
 """
+
+
 def run_one_experiment(env, policy, num_episodes, display=False):
     """
     Run one experiment, when agent follows a policy, for a given number of episodes.
@@ -97,6 +98,8 @@ def run_one_experiment(env, policy, num_episodes, display=False):
 """
     A utility function to display a 1D array/policy in a 2D array/grid
 """
+
+
 def display_policy(policy, n_states):
     side = int(math.sqrt(n_states))  # assuming a square
     policy = policy.reshape((side, side))
@@ -106,7 +109,9 @@ def display_policy(policy, n_states):
 def main():
     # Create a FrozenLake 8x8 environment using Gymnasium
     # (https://gymnasium.farama.org/environments/toy_text/frozen_lake/).
-    env = gym.make('FrozenLake-v1', desc=None, map_name="8x8", is_slippery=True, render_mode="ansi")
+    env = gym.make(
+        "FrozenLake-v1", desc=None, map_name="8x8", is_slippery=True, render_mode="ansi"
+    )
 
     # Currently env is a wrapper for the environment (class = TimeLimit)
     print("type of env")
@@ -120,7 +125,6 @@ def main():
     # ... and then we get to our frozen lake env (class = FrozenLakeEnv)
     print("type of env.env.env.env")
     print(type(env.env.env.env))
-
 
     # Reset the environment and display it (in ansi ascii)
     env.reset()
@@ -143,7 +147,9 @@ def main():
 
     # general info about the environment ...
     nS = env.observation_space.n  # number of states -- 8x8=64
-    nA = env.action_space.n  # number of actions -- four directions; 0:left, 1:down, 2:right, 3:up
+    nA = (
+        env.action_space.n
+    )  # number of actions -- four directions; 0:left, 1:down, 2:right, 3:up
     print(f"\nnumber of states: {nS}\nnumber of actions: {nA}")
 
     # Note that actions are 0 - based integers.You can check in the Gymnasium source code:
@@ -199,12 +205,18 @@ def main():
     print("\nRunning one experiment with this random policy (5 runs with display)")
     num_episodes = 5
     display = True
-    goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes, display)
+    goals, holes, total_rewards, total_goal_steps = run_one_experiment(
+        env, policy, num_episodes, display
+    )
 
-    print("\nRunning one experiment with this random policy (1000 runs without display)")
+    print(
+        "\nRunning one experiment with this random policy (1000 runs without display)"
+    )
     num_episodes = 1000
     display = False
-    goals, holes, total_rewards, total_goal_steps = run_one_experiment(env, policy, num_episodes, display)
+    goals, holes, total_rewards, total_goal_steps = run_one_experiment(
+        env, policy, num_episodes, display
+    )
 
     percent_goal = goals / num_episodes
     percent_hole = holes / num_episodes
@@ -216,7 +228,6 @@ def main():
     print(f"\tHoles: {holes:>5d}/{num_episodes} = {percent_hole:>7.3%}")
     print(f"\tmean reward:          {mean_reward:.5f}")
     print(f"\tmean goal steps:     {mean_goal_steps:.2f}")
-
 
 
 if __name__ == "__main__":
