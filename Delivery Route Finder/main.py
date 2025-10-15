@@ -1,42 +1,39 @@
-
 """
 # ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 380/480
-#
-#  MODIFIED BY: Jonesh Shrestha
+#  Delivery Route Finder
 # ===============================================
 """
 
 import sys
 
-from AI1_HW_Problem.map import CityMap
-from AI1_HW_Problem.search_request import SearchRequest
-from AI1_HW_Problem.problem import Problem
-from AI1_HW1_Search.search_algorithms import SearchAlgorithms
+from delivery_problem.map import CityMap
+from delivery_problem.search_request import SearchRequest
+from delivery_problem.problem import Problem
+from search.search_algorithms import SearchAlgorithms
+
 
 def main():
-    # ... loading the map from JSON file ...
+    # Load the city map from JSON file
     map = CityMap.FromFile("./tegucigalpa.json")
-    # ... loading the test cases from JSON file ...
-    test_cases = SearchRequest.FromTestCasesFile("./test_cases.json")
+    # Load delivery scenarios from JSON file
+    delivery_scenarios = SearchRequest.FromTestCasesFile("./test_cases.json")
 
-    for test_case in test_cases:
-        print("\n\nTest Case info:")
-        print(f" - Name: {test_case.get_name()}")
-        print(f" - Starting Location: {test_case.get_start_location()}")
-        print(f" - Delivery Locations: {test_case.get_targets()}")
+    for scenario in delivery_scenarios:
+        print("\n\nDelivery Scenario:")
+        print(f" - Name: {scenario.get_name()}")
+        print(f" - Starting Location: {scenario.get_start_location()}")
+        print(f" - Delivery Locations: {scenario.get_targets()}")
 
-        # Create the problem
-        problem = Problem(map, test_case)
+        # Create the problem instance
+        problem = Problem(map, scenario)
 
-        # use BFS ....
+        # Run Breadth-First Search
         SearchAlgorithms.search(problem, SearchAlgorithms.BreadthFirstSearch)
 
-        # use UCS ....
+        # Run Uniform Cost Search
         SearchAlgorithms.search(problem, SearchAlgorithms.UniformCostSearch)
 
-        # use A* ....
+        # Run A* Search
         SearchAlgorithms.search(problem, SearchAlgorithms.AStarSearch)
 
 

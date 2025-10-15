@@ -1,9 +1,6 @@
-
 """
 # ===============================================
-#  Created by: Kenny Davila Castellanos
-#              for CSC 380/480
-#  DO NOT MODIFY / DO NOT REDISTRIBUTE!!
+#  State representation for delivery problem
 # ===============================================
 """
 
@@ -28,10 +25,9 @@ from typing import List
        that would mean that locations 'F2' and 'X4' have been visited already, 
        and that 'A2', 'K3' and 'D2' are still pending.
     
-    Note that the locations in the Search Request object are NOT sorted (this is 
-    completely intentional). These locations simply follow whatever order that 
-    was used in the original test case file. This order should not have any effect 
-    on the search process. 
+    Note that the locations in the Search Request object are NOT sorted. These 
+    locations simply follow whatever order was specified in the input file. This 
+    order should not have any effect on the search process. 
     
     Finally, the atomic attribute keeps an "atomic representation" of the whole
     state, which is required for keeping records of the nodes that have been 
@@ -47,7 +43,11 @@ class State:
         self.__visited_targets = visited_targets
 
         # create the atomic representation ...
-        self.__atomic = current_loc + "-" + "".join([("1" if visited else "0") for visited in visited_targets])
+        self.__atomic = (
+            current_loc
+            + "-"
+            + "".join([("1" if visited else "0") for visited in visited_targets])
+        )
 
     def get_location(self):
         return self.__current_loc
