@@ -20,21 +20,21 @@ def main():
     out_normalizer_filename = sys.argv[3]
     out_classifier_filename = sys.argv[4]
 
-    # 1) Load (training) hyper-parameters
-    print("Loading (training) hyper-parameters...")
+    # Load training hyperparameters
+    print("Loading training hyperparameters...")
     classifier_name, class_config = load_hyperparameters(in_config_filename, "training")
     print(f"Using classifier: {classifier_name}")
     print(f"Hyperparameters: {class_config}")
 
-    # 2) Load data
+    # Load training data
     print(f"Loading training data from: {in_raw_data_filename}")
     dataset_x, dataset_y = load_raw_dataset(in_raw_data_filename)
 
-    # 3) normalize the data ...
+    # Normalize the data
     print("Normalizing data...")
     new_X, scaler = apply_normalization(dataset_x, None)
 
-    # 4) train classifier on the training split
+    # Train classifier
     print(f"Training {classifier_name} classifier...")
     start_time = time.time()
     classifier = train_classifier(classifier_name, class_config, new_X, dataset_y)
@@ -43,21 +43,18 @@ def main():
     print("Training completed.")
     print(f"Training Time: {training_time:.4f} seconds")
 
-    # 5) evaluate classifier on the training dataset (compute and print metrics)
+    # Evaluate classifier on training dataset
     print("\nEvaluating classifier on training data...")
     inference_start = time.time()
     train_predictions = classifier.predict(new_X)
     inference_end = time.time()
     inference_time = inference_end - inference_start
 
-    # print metrics using classification report
     print("Training Set Classification Report:")
     print(classification_report(dataset_y, train_predictions))
 
-    # get classification report as dictionary
     train_report = classification_report(dataset_y, train_predictions, output_dict=True)
 
-    # print metrics summary
     print(f"\nTraining Set Summary:")
     print(f"Accuracy: {train_report['accuracy']:.4f}")
     print(
@@ -72,7 +69,7 @@ def main():
     )
     print(f"Training Inference Time: {inference_time:.4f} seconds")
 
-    # 6) save the classifier and the standard scaler ... (pickle library)
+    # Save classifier and scaler
     print(f"Saving trained classifier to: {out_classifier_filename}")
     with open(out_classifier_filename, "wb") as f:
         pickle.dump(classifier, f)
