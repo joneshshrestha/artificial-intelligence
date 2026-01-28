@@ -33,12 +33,16 @@ def q_learning(agent, env, max_steps, train=True):
 
     # Play continuously until max_steps.
     for i in range(max_steps):
+        agent.init_state(state)  # initialize the state for the agent
 
         # Select the action to take at this state.
         if train:
             action = agent.select_action(state)  # (A) epsilon greedy selection
         else:
-            action = agent.select_greedy(state)  # (A) greedy selection
+            # action = agent.select_greedy(state)  # (A) greedy selection
+            action = agent.select_action(
+                state
+            )  # epsilon-greedy using learned Q-table for part 2
 
         # Environment executes the selected action.
         next_state, reward, done, _ = env.step(action)
@@ -120,28 +124,81 @@ def run_ql(max_runs, max_steps, in_params, qtable_file, display=False, train=Fal
 
 ##===================================================
 ## Call run_ql() for either/both training and evaluation
-num_runs = 1  # 10
+num_runs = 10  # 10
 num_steps = 1000  # 300 #1000
 
 params = dict()
 params["gamma"] = 0.95
 params["alpha"] = 0.7
-params["epsilon"] = 0.6  # exploration probability at start
+params["epsilon"] = 0.2  # exploration probability at start
 params["epsilon_min"] = 0.01  # minimum epsilon
 params["epsilon_decay"] = 0.995  # exponential decay rate for epsilon
 
-qtable_file = "qtable_2025.csv"  # "qtable_true.csv" #None
+# qtable_file = "qtable_part1_exp3.csv"  # "qtable_true.csv" #None
 
 # Call run_ql() for either training or evaluation
-# results_list = run_ql(num_runs, num_steps, params, qtable_file, display = True, train = False) # evaluation
-results_list = run_ql(
-    num_runs, num_steps, params, qtable_file, display=False, train=True
-)  # training
+# results_list = run_ql(num_runs, num_steps, params, qtable_file, display=False, train=False)  # evaluation
+# results_list = run_ql(num_runs, num_steps, params, qtable_file, display=False, train=True)  # training
 
-results = np.array(results_list)
-cmean = np.mean(results, axis=0)
-print(
-    "\n** Mean: Return={:>8.3f}, #Apples={}, #Stops={}, #GoodSteps={}, #UniqueStatesVisited={}".format(
-        cmean[0], cmean[1], cmean[2], cmean[3], cmean[4]
+
+# results = np.array(results_list)
+# cmean = np.mean(results, axis=0)
+# print(
+#     "\n** Mean: Return={:>8.3f}, #Apples={}, #Stops={}, #GoodSteps={}, #UniqueStatesVisited={}".format(
+#         cmean[0], cmean[1], cmean[2], cmean[3], cmean[4]
+#     )
+# )
+
+
+# Part 2: Epsilon Experiment
+epsilon_list = [0.1, 0.3, 0.5, 0.7, 0.9]
+
+# Using learned Q-table from Part 1 Experiment 2 (num_steps=1000, epsilon=0.6)
+qtable_file = "qtable_part1_exp2.csv"
+
+means = []
+
+for eps in epsilon_list:
+    params["epsilon"] = eps
+
+    print(f"Epsilon={eps}")
+
+    # same as above, but with different epsilon values
+    results_list = run_ql(
+        num_runs, num_steps, params, qtable_file, display=False, train=False
     )
-)
+
+    results = np.array(results_list)
+    cmean = np.mean(results, axis=0)
+    means.append(cmean)
+
+    print(
+        "\n** Mean: Return={:>8.3f}, #Apples={}, #Stops={}, #GoodSteps={}, #UniqueStatesVisited={}".format(
+            cmean[0], cmean[1], cmean[2], cmean[3], cmean[4]
+        )
+    )
+
+means = np.array(means)
+
+aspects = [
+    "Returns",
+    "# of Apples",
+    "# of Stops",
+    "# of Good Steps",
+    "# of States Visited",
+]
+
+for i, name in enumerate(aspects):
+    plt.figure()
+    plt.plot(epsilon_list, means[:, i])
+    plt.xlabel("epsilon")
+    plt.ylabel(f"Mean {name}")
+    plt.title(f"Mean {name} vs epsilon")
+    plt.xticks(epsilon_list)
+    plt.savefig(
+        f"part2_{i}_{name}.png",
+        bbox_inches="tight",
+    )
+    plt.close()
+
+print("\nSaved plots")
