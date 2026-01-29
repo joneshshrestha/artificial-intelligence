@@ -1,7 +1,7 @@
 """
 Jonesh Shrestha (2222011)
-Artificial Intelligence II (Winter 2026)
-CSC 580 HW#2 "Agent.py" -- Class Agent, which performs Temporal Difference (TD) Q-Learning.
+CSC 580: Artificial Intelligence II (Winter 2026)
+HW#2 "Agent.py" -- Class Agent, which performs Temporal Difference (TD) Q-Learning.
 """
 
 import random

@@ -1,7 +1,7 @@
 """
 Jonesh Shrestha (2222011)
-Artificial Intelligence II (Winter 2026)
-CSC 580 HW#2 "QLearning.py" -- Q-learning for the Snake Game
+CSC 580: Artificial Intelligence II (Winter 2026)
+HW#2 "QLearning.py" -- Q-learning for the Snake Game
 """
 
 import matplotlib
