@@ -1,0 +1,6 @@
+ale_py
+gymnasium
+matplotlib
+numpy
+opencv-python
+torch
