@@ -6,6 +6,7 @@ Collection of core functions for Atari Pong.
 #---------------------------------------------------
 # 1. Wrappers -- additional features for environment
 #---------------------------------------------------
+from re import A
 import gymnasium as gym
 import numpy as np
 import cv2
@@ -14,7 +15,7 @@ import ale_py
 
 class AtariPreprocess(gym.ObservationWrapper):
     """Observation wrapper, which converts raw Atari frames into
-    84×84 grayscale images."""
+    84ï¿½84 grayscale images."""
     
     def __init__(self, env):
         super().__init__(env)
@@ -110,20 +111,41 @@ class ReplayBuffer:
         self.pos = 0
 
     def push(self, state, action, reward, next_state, done):
-        ## (*) TODO:
         ## Store transition in buffer (circular).
         ## Be sure not to extend beyond capacity as well as setting
         ## the self.pos correctly.
-        ##
+        
+        # create transition buffer
+        transition = (state, action, reward, next_state, done)
+        # if buffer is not full, add transition
+        if len(self.buffer) < self.capacity:
+            self.buffer.append(transition)
+        # if buffer is full, overwrite oldest transition at position self.pos
+        else:
+            self.buffer[self.pos] = transition
+            self.pos = (self.pos + 1) % self.capacity
+        
+        # increment position
+        self.pos = (self.pos + 1) % self.capacity
 
 
     def sample(self, batch_size):
-        ## (*) TODO:
         ## Sample a batch of transitions from buffer and return them
         ## in arrays (where each element such as states, actions, etc.
         ## are made into separate numpy arrays).
-        ##
+        
+        # sample a batch of transitions from buffer
+        buffer_batch = random.sample(self.buffer, batch_size)
+        # create numpy arrays for each transition
+        states, actions, rewards, next_states, dones = zip(*buffer_batch)
+        # convert to numpy arrays and convert to float32 and int32
+        states = np.array(states, dtype=np.float32)
+        actions = np.array(actions, dtype=np.int64)
+        rewards = np.array(rewards, dtype=np.float32)
+        next_states = np.array(next_states, dtype=np.float32)
+        dones = np.array(dones, dtype=np.float32)
 
+        return states, actions, rewards, next_states, dones
 
     def __len__(self):
         return len(self.buffer)
@@ -171,9 +193,9 @@ class DQN(nn.Module):
     Architecture
     ------------
     - Three convolutional layers with ReLU activations:
-        * 32 filters, 8×8 kernel, stride 4
-        * 64 filters, 4×4 kernel, stride 2
-        * 64 filters, 3×3 kernel, stride 1
+        * 32 filters, 8ï¿½8 kernel, stride 4
+        * 64 filters, 4ï¿½4 kernel, stride 2
+        * 64 filters, 3ï¿½3 kernel, stride 1
     - Fully connected layer with 512 hidden units
     - Output layer producing one Q-value per action
 
@@ -205,9 +227,19 @@ class DQN(nn.Module):
         )
 
     def forward(self, x):
-        ## (*) TODO:
         ## Normalize input, then and compute Q-values (output of the
         ## fully-connected (fc) block.  Return the q-values."""
+        # normalize input x where x: (batch_size, 4, 84, 84)
+        x = x.float() / 255.0
+        # compute Q-values
+        # pass through convolutional layers
+        x = self.conv(x)
+        # flatten x after convolutional layers
+        x = torch.flatten(x, start_dim=1)
+        # pass through fully-connected layers (Q-values)
+        q_values = self.fc(x)
+        # return Q-values
+        return q_values
 
 
 
