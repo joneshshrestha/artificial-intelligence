@@ -123,7 +123,6 @@ class ReplayBuffer:
         # if buffer is full, overwrite oldest transition at position self.pos
         else:
             self.buffer[self.pos] = transition
-            self.pos = (self.pos + 1) % self.capacity
         
         # increment position
         self.pos = (self.pos + 1) % self.capacity
