@@ -111,6 +111,7 @@ class ReplayBuffer:
         self.pos = 0
 
     def push(self, state, action, reward, next_state, done):
+<<<<<<< HEAD
         ## Store transition in buffer (circular).
         ## Be sure not to extend beyond capacity as well as setting
         ## the self.pos correctly.
@@ -126,6 +127,16 @@ class ReplayBuffer:
         
         # increment position
         self.pos = (self.pos + 1) % self.capacity
+=======
+        ## (*) TODO:
+        ## Inser a transition (a 5-tuple consisting of <state, action, reward, 
+        ## next_state, done> in buffer (circular).  Extend the buffer (list)
+        ## if the buffer is under the capacity (and increment pos).  If it is 
+        ## at the full capacity, overwrite the slot in the buffer indicated by
+        ## pos.  Be sure not to extend beyond capacity as well as incrementing
+        ## (setting) the self.pos correctly.
+        ##
+>>>>>>> 51210a5 (add binary image segmentation using U-net)
 
 
     def sample(self, batch_size):
